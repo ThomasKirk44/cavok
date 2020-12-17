@@ -2,7 +2,6 @@ import 'package:audioplayer/audioplayer.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cavok/model/radioController.dart';
 import 'package:cavok/widgets/controllerMessageBubble.dart';
-import 'package:cavok/widgets/frequencyPicker.dart';
 import 'package:cavok/widgets/pilotMessageBubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -16,7 +15,7 @@ class RadioView extends StatefulWidget {
 
 class _RadioViewState extends State<RadioView> {
   final Map<String, HighlightedWord> _highlights = {
-    'radio frequency': HighlightedWord(
+    'frequency': HighlightedWord(
       onTap: () => print('flutter'),
       textStyle: const TextStyle(
         color: Colors.blue,
@@ -139,7 +138,6 @@ class _RadioViewState extends State<RadioView> {
                 ),
               ),
             ),
-            FrequencyPicker()
           ],
         ),
       ),

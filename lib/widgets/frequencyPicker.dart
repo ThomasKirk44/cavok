@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:numberpicker/numberpicker.dart';
 
 class FrequencyPicker extends StatefulWidget {
   FrequencyPicker({this.onChanged});
@@ -13,13 +12,46 @@ class FrequencyPicker extends StatefulWidget {
 }
 
 class _FrequencyPickerState extends State<FrequencyPicker> {
+  int val = 8;
+
+  double get totalValue {
+    return double.parse("");
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        NumberPicker.integer(
-            initialValue: 0, minValue: 0, maxValue: 9, onChanged: (value) {})
-      ],
+    return Center(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onVerticalDragEnd: (value) {
+              setState(() {
+                print(value);
+                if (value.primaryVelocity.roundToDouble() < 0) {
+                  val -= 1;
+                } else {
+                  val += 1;
+                }
+              });
+            },
+            child: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                  color: Colors.blue,
+                  border: Border.all(color: Colors.blueGrey, width: 5)),
+              child: Center(
+                child: Text(
+                  "$val",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

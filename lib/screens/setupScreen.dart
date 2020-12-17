@@ -1,6 +1,7 @@
 import 'package:cavok/model/aircrafts.dart';
 import 'package:cavok/model/places.dart';
 import 'package:cavok/screens/radioView.dart';
+import 'package:cavok/widgets/frequencyPicker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 
@@ -75,7 +76,8 @@ class _SetupScreenState extends State<SetupScreen> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => RadioView()));
                   }
-                })
+                }),
+            FrequencyPicker()
           ],
         ),
       ),
