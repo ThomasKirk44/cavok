@@ -1,7 +1,11 @@
+import 'package:audioplayer/audioplayer.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cavok/model/radioController.dart';
 import 'package:cavok/widgets/controllerMessageBubble.dart';
+import 'package:cavok/widgets/frequencyPicker.dart';
 import 'package:cavok/widgets/pilotMessageBubble.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:highlight_text/highlight_text.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
@@ -49,15 +53,30 @@ class _RadioViewState extends State<RadioView> {
     ),
   };
 
+  void speak(String speak) async {
+    flutterTts.setVolume(1);
+    flutterTts.setPitch(1);
+    flutterTts.setSpeechRate(0.5);
+    flutterTts.setLanguage("en-ZA");
+    print(await flutterTts.getLanguages);
+    print(await flutterTts.getVoices);
+    await flutterTts.speak(speak);
+  }
+
+  FlutterTts flutterTts = FlutterTts();
+  RadioController airTrafficControl = RadioController();
+  AudioPlayer audioPlugin;
   stt.SpeechToText _speech;
   bool _isListening = false;
   String _text = 'Press the button and start speaking';
   double _confidence = 1.0;
+  double _currentFrequency;
 
   @override
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
+    audioPlugin = AudioPlayer();
   }
 
   @override
@@ -76,7 +95,11 @@ class _RadioViewState extends State<RadioView> {
         repeat: true,
         child: FloatingActionButton(
           backgroundColor: _isListening ? Colors.red : Colors.green,
-          onPressed: _listen,
+          onPressed: () async {
+            _listen();
+            print("speak");
+            //  await speak("Your tired??");
+          },
           child: Icon(
             _isListening ? Icons.mic : Icons.mic_none,
           ),
@@ -84,31 +107,40 @@ class _RadioViewState extends State<RadioView> {
       ),
       body: SingleChildScrollView(
         reverse: true,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 150.0),
-          child: SafeArea(
-            child: Column(
-              children: [
-                ControllerMessageBubble(
-                  message:
-                      "safldksjfals;kdfjasl;kfajsfl;aksjfl;askjfas;ldkfjads;lfkjadsfl;kdsjfa;lskfjdasl;kfjsal;fkjasdl;fkjsda",
+        child: Stack(
+          children: [
+            Container(
+              padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 150.0),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    ControllerMessageBubble(
+                      highlightWords: _highlights,
+                      message:
+                          "safldksjfals;kdfjasl;kfajsfl;aksjfl;askjfas;ldkfjads;lfkjadsfl;kdsjfa;lskfjdasl;kfjsal;fkjasdl;fkjsda",
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    PilotMessageBubble(
+                      message: _text,
+                      highlightWords: _highlights,
+                    ),
+                    TextHighlight(
+                      text: _text,
+                      words: _highlights,
+                      textStyle: const TextStyle(
+                        fontSize: 32.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                PilotMessageBubble(message: _text),
-                TextHighlight(
-                  text: _text,
-                  words: _highlights,
-                  textStyle: const TextStyle(
-                    fontSize: 32.0,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            FrequencyPicker()
+          ],
         ),
       ),
     );

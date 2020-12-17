@@ -1,4 +1,11 @@
+import 'package:flutter/material.dart';
+
 class Airport {
-  static final String newCastle = "newCastle";
-  static final String welshpool = "welshPool";
+  Airport(
+      {@required this.name,
+      @required this.frequency,
+      @required this.radioAbbreviation});
+  final String name;
+  final String radioAbbreviation;
+  final double frequency;
 }

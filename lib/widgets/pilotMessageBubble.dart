@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:highlight_text/highlight_text.dart';
 
 class PilotMessageBubble extends StatelessWidget {
-  PilotMessageBubble({@required this.message});
+  PilotMessageBubble({@required this.message, this.highlightWords});
+  final Map<String, HighlightedWord> highlightWords;
   final String message;
 
   @override
@@ -16,9 +18,14 @@ class PilotMessageBubble extends StatelessWidget {
           width: 300,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(
-              message,
-              style: TextStyle(color: Colors.white, fontSize: 18),
+            child: TextHighlight(
+              text: message,
+              words: highlightWords,
+              textStyle: const TextStyle(
+                fontSize: 18.0,
+                color: Colors.black,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
         ),

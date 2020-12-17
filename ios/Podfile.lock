@@ -1,6 +1,10 @@
 PODS:
+  - audioplayer (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
   - flutter_speech (0.0.1):
+    - Flutter
+  - flutter_tts (0.0.1):
     - Flutter
   - speech_to_text (0.0.1):
     - Flutter
@@ -8,8 +12,10 @@ PODS:
   - Try (2.1.1)
 
 DEPENDENCIES:
+  - audioplayer (from `.symlinks/plugins/audioplayer/ios`)
   - Flutter (from `Flutter`)
   - flutter_speech (from `.symlinks/plugins/flutter_speech/ios`)
+  - flutter_tts (from `.symlinks/plugins/flutter_tts/ios`)
   - speech_to_text (from `.symlinks/plugins/speech_to_text/ios`)
 
 SPEC REPOS:
@@ -17,16 +23,22 @@ SPEC REPOS:
     - Try
 
 EXTERNAL SOURCES:
+  audioplayer:
+    :path: ".symlinks/plugins/audioplayer/ios"
   Flutter:
     :path: Flutter
   flutter_speech:
     :path: ".symlinks/plugins/flutter_speech/ios"
+  flutter_tts:
+    :path: ".symlinks/plugins/flutter_tts/ios"
   speech_to_text:
     :path: ".symlinks/plugins/speech_to_text/ios"
 
 SPEC CHECKSUMS:
+  audioplayer: 0584f31a697e4b0bbad405ae7903d7a93585e784
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_speech: dfa314b1f47e8e680a029c3705b3de22ddfceaf1
+  flutter_tts: 0f492aab6accf87059b72354fcb4ba934304771d
   speech_to_text: b43a7d99aef037bd758ed8e45d79bbac035d2dfe
   Try: 5ef669ae832617b3cee58cb2c6f99fb767a4ff96
 
