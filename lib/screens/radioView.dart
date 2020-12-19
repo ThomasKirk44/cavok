@@ -116,7 +116,7 @@ class _RadioViewState extends State<RadioView> {
                     ControllerMessageBubble(
                       highlightWords: _highlights,
                       message:
-                          "safldksjfals;kdfjasl;kfajsfl;aksjfl;askjfas;ldkfjads;lfkjadsfl;kdsjfa;lskfjdasl;kfjsal;fkjasdl;fkjsda",
+                          "Some Air-traffic Control message will be displayed here",
                     ),
                     SizedBox(
                       height: 20,
@@ -125,15 +125,15 @@ class _RadioViewState extends State<RadioView> {
                       message: _text,
                       highlightWords: _highlights,
                     ),
-                    TextHighlight(
-                      text: _text,
-                      words: _highlights,
-                      textStyle: const TextStyle(
-                        fontSize: 32.0,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
+                    // TextHighlight(
+                    //   text: _text,
+                    //   words: _highlights,
+                    //   textStyle: const TextStyle(
+                    //     fontSize: 32.0,
+                    //     color: Colors.black,
+                    //     fontWeight: FontWeight.w400,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
