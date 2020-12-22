@@ -1,0 +1,92 @@
+{
+    "meta": {
+        "timestamp": "2020-12-22T06:45:50.149571Z",
+        "stations_updated": "2020-11-27"
+    },
+    "altimeter": {
+        "repr": "A2981",
+        "value": 29.81,
+        "spoken": "two nine point eight one"
+    },
+    "clouds": [
+        {
+            "repr": "SCT011",
+            "type": "SCT",
+            "altitude": 11,
+            "modifier": null,
+            "direction": null
+        },
+        {
+            "repr": "BKN019",
+            "type": "BKN",
+            "altitude": 19,
+            "modifier": null,
+            "direction": null
+        },
+        {
+            "repr": "OVC023",
+            "type": "OVC",
+            "altitude": 23,
+            "modifier": null,
+            "direction": null
+        }
+    ],
+    "flight_rules": "MVFR",
+    "other": [],
+    "sanitized": "KSEA 220633Z 14008KT 10SM SCT011 BKN019 OVC023 02/01 A2981 RMK AO2 T00220011",
+    "visibility": {
+        "repr": "10",
+        "value": 10,
+        "spoken": "one zero"
+    },
+    "wind_direction": {
+        "repr": "140",
+        "value": 140,
+        "spoken": "one four zero"
+    },
+    "wind_gust": null,
+    "wind_speed": {
+        "repr": "08",
+        "value": 8,
+        "spoken": "eight"
+    },
+    "wx_codes": [],
+    "raw": "KSEA 220633Z 14008KT 10SM SCT011 BKN019 OVC023 02/01 A2981 RMK AO2 T00220011",
+    "station": "KSEA",
+    "time": {
+        "repr": "220633Z",
+        "dt": "2020-12-22T06:33:00Z"
+    },
+    "remarks": "RMK AO2 T00220011",
+    "dewpoint": {
+        "repr": "01",
+        "value": 1,
+        "spoken": "one"
+    },
+    "remarks_info": {
+        "dewpoint_decimal": {
+            "repr": "1.1",
+            "value": 1.1,
+            "spoken": "one point one"
+        },
+        "temperature_decimal": {
+            "repr": "2.2",
+            "value": 2.2,
+            "spoken": "two point two"
+        }
+    },
+    "runway_visibility": [],
+    "temperature": {
+        "repr": "02",
+        "value": 2,
+        "spoken": "two"
+    },
+    "wind_variable_direction": [],
+    "units": {
+        "altimeter": "inHg",
+        "altitude": "ft",
+        "temperature": "C",
+        "visibility": "sm",
+        "wind_speed": "kt"
+    }
+}

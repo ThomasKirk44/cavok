@@ -1,4 +1,4 @@
-import 'package:cavok/screens/setupScreen.dart';
+import 'package:cavok/screens/radioView.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SetupScreen(),
+      home: RadioView(),
     );
   }
 }

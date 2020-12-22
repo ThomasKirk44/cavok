@@ -1,3 +1,4 @@
+import 'package:cavok/data/airports.dart';
 import 'package:cavok/model/aircrafts.dart';
 import 'package:cavok/model/places.dart';
 import 'package:cavok/screens/radioView.dart';
@@ -14,6 +15,14 @@ class _SetupScreenState extends State<SetupScreen> {
   var startingAirport = "";
   var endingAirport = "";
   var airplane = "";
+
+  @override
+  void didChangeDependencies() async {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    Airports airports = Airports(context: context);
+    await airports.getData();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -10,13 +10,9 @@ class Places {
 
   ///Airports
   static final Airport welshPool = Airport(
-      name: "welshPool",
-      radioAbbreviation: "WHL",
-      frequency: random.nextDouble() * 150);
+      name: "welshPool", icao: "WHL", frequency: random.nextDouble() * 150);
   static final Airport newCastle = Airport(
-      name: "newCastle",
-      radioAbbreviation: "ILG",
-      frequency: random.nextDouble() * 150);
+      name: "newCastle", icao: "ILG", frequency: random.nextDouble() * 150);
 
   ///AirSpace
   static final AirSpace shawbury =

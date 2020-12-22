@@ -59,6 +59,8 @@ flutter:
   assets:
     - assets/
     - assets/fonts/Tower.ttf
+    - assets/json/airports.json
+    - assets/json/mockMetar.json
 
 
 

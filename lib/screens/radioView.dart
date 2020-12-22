@@ -1,5 +1,7 @@
 import 'package:audioplayer/audioplayer.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cavok/model/airport.dart';
+import 'package:cavok/model/atisMetar.dart';
 import 'package:cavok/model/radioController.dart';
 import 'package:cavok/widgets/controllerMessageBubble.dart';
 import 'package:cavok/widgets/pilotMessageBubble.dart';
@@ -62,6 +64,7 @@ class _RadioViewState extends State<RadioView> {
     await flutterTts.speak(speak);
   }
 
+  MetarService atisMetar;
   FlutterTts flutterTts = FlutterTts();
   RadioController airTrafficControl = RadioController();
   AudioPlayer audioPlugin;
@@ -70,10 +73,18 @@ class _RadioViewState extends State<RadioView> {
   String _text = 'Press the button and start speaking';
   double _confidence = 1.0;
   double _currentFrequency;
+  String atisData;
+
+  Future<void> getData() async {
+    atisData = await atisMetar.getCurrentData(context);
+  }
 
   @override
   void initState() {
     super.initState();
+    Airport airport = Airport(icao: "KJFK");
+    atisMetar = MetarService(currentAirport: airport);
+    getData();
     _speech = stt.SpeechToText();
     audioPlugin = AudioPlayer();
   }
@@ -95,9 +106,9 @@ class _RadioViewState extends State<RadioView> {
         child: FloatingActionButton(
           backgroundColor: _isListening ? Colors.red : Colors.green,
           onPressed: () async {
-            _listen();
+            // _listen();
             print("speak");
-            //  await speak("Your tired??");
+            await airTrafficControl.speakPhonetic(forWord: atisData);
           },
           child: Icon(
             _isListening ? Icons.mic : Icons.mic_none,
