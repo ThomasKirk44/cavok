@@ -18,8 +18,10 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
   int _v4;
   int _v5;
   TextStyle selectedStyle =
-      TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20);
+      TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30);
 
+  TextStyle unselectedStyle = TextStyle(
+      color: Colors.white, fontWeight: FontWeight.normal, fontSize: 20);
   @override
   void initState() {
     // TODO: implement initState
@@ -35,7 +37,9 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey,
+      decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.all(Radius.circular(20))),
       height: 120,
       width: 160,
       child: Center(
@@ -44,7 +48,7 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
           children: [
             NumberPicker.integer(
                 selectedTextStyle: selectedStyle,
-                textStyle: TextStyle(color: Colors.white),
+                textStyle: unselectedStyle,
                 itemExtent: 40,
                 listViewWidth: 20,
                 haptics: true,
@@ -61,7 +65,7 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
                 }),
             NumberPicker.integer(
                 selectedTextStyle: selectedStyle,
-                textStyle: TextStyle(color: Colors.white),
+                textStyle: unselectedStyle,
                 itemExtent: 40,
                 listViewWidth: 20,
                 haptics: true,
@@ -78,7 +82,7 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
                 }),
             NumberPicker.integer(
                 selectedTextStyle: selectedStyle,
-                textStyle: TextStyle(color: Colors.white),
+                textStyle: unselectedStyle,
                 itemExtent: 40,
                 listViewWidth: 20,
                 haptics: true,
@@ -99,7 +103,7 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
             ),
             NumberPicker.integer(
                 selectedTextStyle: selectedStyle,
-                textStyle: TextStyle(color: Colors.white),
+                textStyle: unselectedStyle,
                 itemExtent: 40,
                 listViewWidth: 20,
                 haptics: true,
@@ -116,7 +120,7 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
                 }),
             NumberPicker.integer(
                 selectedTextStyle: selectedStyle,
-                textStyle: TextStyle(color: Colors.white),
+                textStyle: unselectedStyle,
                 itemExtent: 40,
                 listViewWidth: 20,
                 haptics: true,

@@ -5,6 +5,7 @@ import 'package:cavok/model/radioController.dart';
 import 'package:cavok/services/metarService.dart';
 import 'package:cavok/widgets/controllerMessageBubble.dart';
 import 'package:cavok/widgets/frequencyPicker.dart';
+import 'package:cavok/widgets/hintBubble.dart';
 import 'package:cavok/widgets/pilotMessageBubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -71,6 +72,7 @@ class _RadioViewState extends State<RadioView> {
   AudioPlayer audioPlugin;
   stt.SpeechToText _speech;
   bool _isListening = false;
+  bool _showHintBubble = false;
   String _text = 'Press the button and start speaking';
   double _confidence = 1.0;
   String _currentFrequency = "000.00";
@@ -87,6 +89,16 @@ class _RadioViewState extends State<RadioView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text(
+              "Frequency".toUpperCase(),
+              style: TextStyle(
+                  color: Colors.blueGrey,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 20,
+            ),
             FrequencyPicker(
               initialValue: _currentFrequency.toString(),
               onChanged: (value) {
@@ -99,7 +111,7 @@ class _RadioViewState extends State<RadioView> {
                   Navigator.of(context).pop();
                 },
                 child: Text(
-                  'Got It!',
+                  'Change',
                   style: TextStyle(color: Colors.purple, fontSize: 18.0),
                 ))
           ],
@@ -144,7 +156,11 @@ class _RadioViewState extends State<RadioView> {
             // _listen();
             print("speak");
             // await airTrafficControl.speakPhonetic(forWord: atisData);
-            showFrequencyPicker(context);
+            setState(() {
+              _showHintBubble = !_showHintBubble;
+            });
+
+            //showFrequencyPicker(context);
           },
           child: Icon(
             _isListening ? Icons.mic : Icons.mic_none,
@@ -156,31 +172,54 @@ class _RadioViewState extends State<RadioView> {
         child: Stack(
           children: [
             Container(
-              padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 150.0),
+              padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 30.0),
               child: SafeArea(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ControllerMessageBubble(
-                      highlightWords: _highlights,
-                      message:
-                          "Some Air-traffic Control message will be displayed here",
+                    Column(
+                      children: [
+                        ControllerMessageBubble(
+                          highlightWords: _highlights,
+                          message:
+                              "Some Air-traffic Control message will be displayed here",
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        PilotMessageBubble(
+                          message: _text,
+                          highlightWords: _highlights,
+                        ),
+                        SizedBox(
+                          height: 250,
+                        ),
+
+                        // TextHighlight(
+                        //   text: _text,
+                        //   words: _highlights,
+                        //   textStyle: const TextStyle(
+                        //     fontSize: 32.0,
+                        //     color: Colors.black,
+                        //     fontWeight: FontWeight.w400,
+                        //   ),
+                        // ),
+                      ],
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    PilotMessageBubble(
-                      message: _text,
-                      highlightWords: _highlights,
-                    ),
-                    // TextHighlight(
-                    //   text: _text,
-                    //   words: _highlights,
-                    //   textStyle: const TextStyle(
-                    //     fontSize: 32.0,
-                    //     color: Colors.black,
-                    //     fontWeight: FontWeight.w400,
-                    //   ),
-                    // ),
+                    _showHintBubble
+                        ? HintBubble(
+                            delayInSeconds: 4,
+                            hintText: "Try saying: ABC",
+                            onVisibilityChanged: (bool) {
+                              if (bool == false) {
+                                setState(() {
+                                  _showHintBubble = bool;
+                                });
+                              }
+                            },
+                          )
+                        : Container()
                   ],
                 ),
               ),
