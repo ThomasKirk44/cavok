@@ -4,6 +4,7 @@ import 'package:cavok/model/places.dart';
 import 'package:cavok/screens/radioView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
+import 'package:multiselect_formfield/multiselect_formfield.dart';
 
 class SetupScreen extends StatefulWidget {
   @override
@@ -15,13 +16,20 @@ class _SetupScreenState extends State<SetupScreen> {
   var startingAirport = "";
   var endingAirport = "";
   var airplane = "";
+  var _myActivities = ["start", "run", "test"];
+  Airports airports;
 
   @override
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    Airports airports = Airports(context: context);
-    await airports.getData();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    airports = Airports(context: context);
   }
 
   @override
@@ -58,6 +66,41 @@ class _SetupScreenState extends State<SetupScreen> {
               title: "Destination Airport",
               data: Places.airports,
               pickerTitle: "Pick Airport",
+            ),
+            MultiSelectFormField(
+              autovalidate: false,
+              chipBackGroundColor: Colors.red,
+              chipLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+              dialogTextStyle: TextStyle(fontWeight: FontWeight.bold),
+              checkBoxActiveColor: Colors.red,
+              checkBoxCheckColor: Colors.green,
+              dialogShapeBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12.0))),
+              title: Text(
+                "Select Airspaces",
+                style: TextStyle(fontSize: 16),
+              ),
+              dataSource: [
+                {
+                  "display": "Shawbury",
+                  "value": "Shawbury",
+                },
+                {
+                  "display": "London",
+                  "value": "London",
+                },
+              ],
+              textField: 'display',
+              valueField: 'value',
+              okButtonLabel: 'OK',
+              cancelButtonLabel: 'CANCEL',
+              hintWidget: Text('Please choose one or more'),
+              onSaved: (value) {
+                // if (value == null) return;
+                // setState(() {
+                //   _myActivities = value;
+                // });
+              },
             ),
             SelectorButton(
               errorText: "airplane must be selected",

@@ -1,9 +1,10 @@
 import 'package:audioplayer/audioplayer.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cavok/model/airport.dart';
-import 'package:cavok/model/atisMetar.dart';
 import 'package:cavok/model/radioController.dart';
+import 'package:cavok/services/metarService.dart';
 import 'package:cavok/widgets/controllerMessageBubble.dart';
+import 'package:cavok/widgets/frequencyPicker.dart';
 import 'package:cavok/widgets/pilotMessageBubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -72,8 +73,42 @@ class _RadioViewState extends State<RadioView> {
   bool _isListening = false;
   String _text = 'Press the button and start speaking';
   double _confidence = 1.0;
-  double _currentFrequency;
+  String _currentFrequency = "000.00";
   String atisData;
+
+  void showFrequencyPicker(BuildContext context) {
+    Dialog errorDialog = Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      //this right here
+      child: Container(
+        height: 300.0,
+        width: 300.0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            FrequencyPicker(
+              initialValue: _currentFrequency.toString(),
+              onChanged: (value) {
+                _currentFrequency = value;
+              },
+            ),
+            FlatButton(
+                onPressed: () {
+                  print(_currentFrequency);
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Got It!',
+                  style: TextStyle(color: Colors.purple, fontSize: 18.0),
+                ))
+          ],
+        ),
+      ),
+    );
+    showDialog(
+        context: context, builder: (BuildContext context) => errorDialog);
+  }
 
   Future<void> getData() async {
     atisData = await atisMetar.getCurrentData(context);
@@ -108,7 +143,8 @@ class _RadioViewState extends State<RadioView> {
           onPressed: () async {
             // _listen();
             print("speak");
-            await airTrafficControl.speakPhonetic(forWord: atisData);
+            // await airTrafficControl.speakPhonetic(forWord: atisData);
+            showFrequencyPicker(context);
           },
           child: Icon(
             _isListening ? Icons.mic : Icons.mic_none,

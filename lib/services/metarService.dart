@@ -7,7 +7,8 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 /// Atis format
-/// 1. Airport Name
+/// 1. Airport Name (speak Name non phonetic)
+/// 2.a Information Quebec
 /// 2. Time Zulu Time
 /// 3. Runway in use
 /// 4. Circuit Direction
@@ -16,7 +17,7 @@ import 'package:http/http.dart' as http;
 /// 7. Cloud Cover
 /// 8. Temperature
 /// 9. Dew Point
-/// 10. QNH (hectopascals)
+/// 10. QNH (hectopascals) if under 1000 read hecto pascals.
 /// 11. QFE
 /// 12. Other Information tower frequency..
 
@@ -38,7 +39,6 @@ class MetarService {
     var result = await http.get(_url);
     if (result.statusCode == 200) {
       print("success");
-
       Map<String, dynamic> jsonData = json.decode(result.body);
       print(jsonData);
       data = MetarReport.fromJson(jsonData);

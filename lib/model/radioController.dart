@@ -39,6 +39,7 @@ Acknowledge receipt of information Hotel and advise aircraft type on first conta
   ///[script] this list defines how the controller will respond to audio input.
   Map<Question, String> script;
 
+  ///altitudes read in the thousands not individually..
   Map<String, String> aviationAlphabet = {
     "a": "alpha",
     "b": "bravo",

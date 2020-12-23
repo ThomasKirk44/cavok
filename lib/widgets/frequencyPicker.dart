@@ -1,56 +1,138 @@
 import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 class FrequencyPicker extends StatefulWidget {
-  FrequencyPicker({this.onChanged});
-
-  Function(double) onChanged;
-
-  double _returnValue() {}
+  FrequencyPicker({@required this.onChanged, @required this.initialValue});
+  Function(String) onChanged;
+  String initialValue;
 
   @override
   _FrequencyPickerState createState() => _FrequencyPickerState();
 }
 
 class _FrequencyPickerState extends State<FrequencyPicker> {
-  int val = 8;
+  String resultValue = "";
+  int _v1;
+  int _v2;
+  int _v3;
+  int _v4;
+  int _v5;
+  TextStyle selectedStyle =
+      TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20);
 
-  double get totalValue {
-    return double.parse("");
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _v1 = int.parse(widget.initialValue[0]);
+    _v2 = int.parse(widget.initialValue[1]);
+    _v3 = int.parse(widget.initialValue[2]);
+    _v4 = int.parse(widget.initialValue[4]);
+    _v5 = int.parse(widget.initialValue[5]);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onVerticalDragEnd: (value) {
-              setState(() {
-                print(value);
-                if (value.primaryVelocity.roundToDouble() < 0) {
-                  val -= 1;
-                } else {
-                  val += 1;
-                }
-              });
-            },
-            child: Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                  color: Colors.blue,
-                  border: Border.all(color: Colors.blueGrey, width: 5)),
-              child: Center(
-                child: Text(
-                  "$val",
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
+    return Container(
+      color: Colors.grey,
+      height: 120,
+      width: 160,
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            NumberPicker.integer(
+                selectedTextStyle: selectedStyle,
+                textStyle: TextStyle(color: Colors.white),
+                itemExtent: 40,
+                listViewWidth: 20,
+                haptics: true,
+                infiniteLoop: true,
+                initialValue: _v1,
+                minValue: 0,
+                maxValue: 9,
+                onChanged: (value) {
+                  setState(() {
+                    _v1 = value;
+                    resultValue = "$_v1$_v2$_v3.$_v4$_v5";
+                    widget.onChanged(resultValue);
+                  });
+                }),
+            NumberPicker.integer(
+                selectedTextStyle: selectedStyle,
+                textStyle: TextStyle(color: Colors.white),
+                itemExtent: 40,
+                listViewWidth: 20,
+                haptics: true,
+                infiniteLoop: true,
+                initialValue: _v2,
+                minValue: 0,
+                maxValue: 9,
+                onChanged: (value) {
+                  setState(() {
+                    _v2 = value;
+                    resultValue = "$_v1$_v2$_v3.$_v4$_v5";
+                    widget.onChanged(resultValue);
+                  });
+                }),
+            NumberPicker.integer(
+                selectedTextStyle: selectedStyle,
+                textStyle: TextStyle(color: Colors.white),
+                itemExtent: 40,
+                listViewWidth: 20,
+                haptics: true,
+                infiniteLoop: true,
+                initialValue: _v3,
+                minValue: 0,
+                maxValue: 9,
+                onChanged: (value) {
+                  setState(() {
+                    _v3 = value;
+                    resultValue = "$_v1$_v2$_v3.$_v4$_v5";
+                    widget.onChanged(resultValue);
+                  });
+                }),
+            Text(
+              ".",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-          )
-        ],
+            NumberPicker.integer(
+                selectedTextStyle: selectedStyle,
+                textStyle: TextStyle(color: Colors.white),
+                itemExtent: 40,
+                listViewWidth: 20,
+                haptics: true,
+                infiniteLoop: true,
+                initialValue: _v4,
+                minValue: 0,
+                maxValue: 9,
+                onChanged: (value) {
+                  setState(() {
+                    _v4 = value;
+                    resultValue = "$_v1$_v2$_v3.$_v4$_v5";
+                    widget.onChanged(resultValue);
+                  });
+                }),
+            NumberPicker.integer(
+                selectedTextStyle: selectedStyle,
+                textStyle: TextStyle(color: Colors.white),
+                itemExtent: 40,
+                listViewWidth: 20,
+                haptics: true,
+                infiniteLoop: true,
+                initialValue: _v5,
+                minValue: 0,
+                maxValue: 9,
+                onChanged: (value) {
+                  setState(() {
+                    _v5 = value;
+                    resultValue = "$_v1$_v2$_v3.$_v4$_v5";
+                    widget.onChanged(resultValue);
+                  });
+                }),
+          ],
+        ),
       ),
     );
   }
