@@ -29,7 +29,7 @@ class _SetupScreenState extends State<SetupScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    airports = Airports(context: context);
+    airports = Airports();
   }
 
   @override

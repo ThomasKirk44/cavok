@@ -65,9 +65,11 @@ class _HintBubbleState extends State<HintBubble> with TickerProviderStateMixin {
         curve: Curves.fastLinearToSlowEaseIn,
       )),
       child: Container(
+        decoration: BoxDecoration(
+            color: _colorAnimationBox.value,
+            borderRadius: BorderRadius.all(Radius.circular(20))),
         height: 100,
         width: 300,
-        color: _colorAnimationBox.value,
         child: Center(
           child: Text(
             widget.hintText,

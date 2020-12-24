@@ -1,4 +1,5 @@
 import 'package:audioplayer/audioplayer.dart';
+import 'package:audioplayers/audio_cache.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cavok/model/airport.dart';
 import 'package:cavok/model/radioController.dart';
@@ -77,6 +78,7 @@ class _RadioViewState extends State<RadioView> {
   double _confidence = 1.0;
   String _currentFrequency = "000.00";
   String atisData;
+  final player = AudioCache();
 
   void showFrequencyPicker(BuildContext context) {
     Dialog errorDialog = Dialog(
@@ -156,6 +158,7 @@ class _RadioViewState extends State<RadioView> {
             // _listen();
             print("speak");
             // await airTrafficControl.speakPhonetic(forWord: atisData);
+            player.play("tripAudio/newcastle-welshpool/11.mp3");
             setState(() {
               _showHintBubble = !_showHintBubble;
             });
@@ -193,7 +196,7 @@ class _RadioViewState extends State<RadioView> {
                           highlightWords: _highlights,
                         ),
                         SizedBox(
-                          height: 250,
+                          height: 300,
                         ),
 
                         // TextHighlight(

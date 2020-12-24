@@ -1,20 +1,18 @@
 import 'dart:convert';
 
 import 'package:cavok/model/airport.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 
 class Airports {
-  BuildContext context;
   Map<String, dynamic> _airports;
   Map<String, dynamic> newList = {};
 
-  Airports({@required this.context}) {
+  Airports() {
     _getData();
   }
 
   void _getData() async {
-    final string = await DefaultAssetBundle.of(context)
-        .loadString("assets/json/airports.json");
+    final string = await rootBundle.loadString("assets/json/airports.json");
     final jsonResult = json.decode(string);
     _airports = jsonResult;
   }

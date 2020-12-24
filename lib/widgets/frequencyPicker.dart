@@ -17,6 +17,7 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
   int _v3;
   int _v4;
   int _v5;
+  int _v6;
   TextStyle selectedStyle =
       TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30);
 
@@ -32,6 +33,7 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
     _v3 = int.parse(widget.initialValue[2]);
     _v4 = int.parse(widget.initialValue[4]);
     _v5 = int.parse(widget.initialValue[5]);
+    _v6 = int.parse(widget.initialValue[6]);
   }
 
   @override
@@ -59,7 +61,7 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
                 onChanged: (value) {
                   setState(() {
                     _v1 = value;
-                    resultValue = "$_v1$_v2$_v3.$_v4$_v5";
+                    resultValue = "$_v1$_v2$_v3.$_v4$_v5$_v6";
                     widget.onChanged(resultValue);
                   });
                 }),
@@ -76,7 +78,7 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
                 onChanged: (value) {
                   setState(() {
                     _v2 = value;
-                    resultValue = "$_v1$_v2$_v3.$_v4$_v5";
+                    resultValue = "$_v1$_v2$_v3.$_v4$_v5$_v6";
                     widget.onChanged(resultValue);
                   });
                 }),
@@ -93,7 +95,7 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
                 onChanged: (value) {
                   setState(() {
                     _v3 = value;
-                    resultValue = "$_v1$_v2$_v3.$_v4$_v5";
+                    resultValue = "$_v1$_v2$_v3.$_v4$_v5$_v6";
                     widget.onChanged(resultValue);
                   });
                 }),
@@ -114,7 +116,7 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
                 onChanged: (value) {
                   setState(() {
                     _v4 = value;
-                    resultValue = "$_v1$_v2$_v3.$_v4$_v5";
+                    resultValue = "$_v1$_v2$_v3.$_v4$_v5$_v6";
                     widget.onChanged(resultValue);
                   });
                 }),
@@ -131,10 +133,27 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
                 onChanged: (value) {
                   setState(() {
                     _v5 = value;
-                    resultValue = "$_v1$_v2$_v3.$_v4$_v5";
+                    resultValue = "$_v1$_v2$_v3.$_v4$_v5$_v6";
                     widget.onChanged(resultValue);
                   });
                 }),
+            NumberPicker.integer(
+                selectedTextStyle: selectedStyle,
+                textStyle: unselectedStyle,
+                itemExtent: 40,
+                listViewWidth: 20,
+                haptics: true,
+                infiniteLoop: true,
+                initialValue: _v6,
+                minValue: 0,
+                maxValue: 9,
+                onChanged: (value) {
+                  setState(() {
+                    _v6 = value;
+                    resultValue = "$_v1$_v2$_v3.$_v4$_v5$_v6";
+                    widget.onChanged(resultValue);
+                  });
+                })
           ],
         ),
       ),

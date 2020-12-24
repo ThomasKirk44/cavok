@@ -1,6 +1,6 @@
 import 'package:audioplayer/audioplayer.dart';
 import 'package:cavok/model/airport.dart';
-import 'package:cavok/model/question.dart';
+import 'package:cavok/model/radioTransmission.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 class RadioController {
@@ -37,7 +37,7 @@ Acknowledge receipt of information Hotel and advise aircraft type on first conta
   ];
 
   ///[script] this list defines how the controller will respond to audio input.
-  Map<Question, String> script;
+  Map<RadioTransmission, String> script;
 
   ///altitudes read in the thousands not individually..
   Map<String, String> aviationAlphabet = {
@@ -101,10 +101,5 @@ Acknowledge receipt of information Hotel and advise aircraft type on first conta
 
   Future<void> speakRandomAtis() {
     speak(randomAtisConditions[1]);
-  }
-
-  String askQuestion(Question question) {
-    if (question.questionClearness < 0.8)
-      return ("Sorry I didnt get that can you please repeat?");
   }
 }
