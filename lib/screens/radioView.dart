@@ -3,6 +3,8 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cavok/model/airport.dart';
 import 'package:cavok/model/radioController.dart';
+import 'package:cavok/model/radioTransmission.dart';
+import 'package:cavok/model/requiredWord.dart';
 import 'package:cavok/services/metarService.dart';
 import 'package:cavok/widgets/controllerMessageBubble.dart';
 import 'package:cavok/widgets/frequencyPicker.dart';
@@ -73,12 +75,20 @@ class _RadioViewState extends State<RadioView> {
   AudioPlayer audioPlugin;
   stt.SpeechToText _speech;
   bool _isListening = false;
-  bool _showHintBubble = false;
+  bool _hintBubbleVisible = false;
   String _text = 'Press the button and start speaking';
+  String _hintText;
   double _confidence = 1.0;
   String _currentFrequency = "000.00";
   String atisData;
   final player = AudioCache();
+
+  void showHintBubble(String withText) {
+    setState(() {
+      _hintText = withText;
+      _hintBubbleVisible = !_hintBubbleVisible;
+    });
+  }
 
   void showFrequencyPicker(BuildContext context) {
     Dialog errorDialog = Dialog(
@@ -155,13 +165,30 @@ class _RadioViewState extends State<RadioView> {
         child: FloatingActionButton(
           backgroundColor: _isListening ? Colors.red : Colors.green,
           onPressed: () async {
-            // _listen();
+            _listen(onFinished: (result) {
+              RadioTransmission(
+                      showHintBubbleWIthMessage: (message) {
+                        showHintBubble(message);
+                      },
+                      informationText: "change frequency to 126.35",
+                      pilotDialogue: ["this is a test"],
+                      towerResponseSoundFileLocation:
+                          "tripAudio/newcastle-welshpool/1.mp3",
+                      towerErrorResponseSoundFileLocation:
+                          "tripAudio/newcastle-welshpool/3.mp3",
+                      requiredWords: [
+                        RequiredWord(wordPermutations: ["test"])
+                      ],
+                      errorHintText: "hint error hint")
+                  .respondToPilotDialogue(
+                      textToSpeechOutput: result,
+                      onUndiscernableSpeech: (failedText, clarity) {
+                        print(result);
+                      });
+            });
             print("speak");
             // await airTrafficControl.speakPhonetic(forWord: atisData);
-            player.play("tripAudio/newcastle-welshpool/11.mp3");
-            setState(() {
-              _showHintBubble = !_showHintBubble;
-            });
+            RadioTransmission();
 
             //showFrequencyPicker(context);
           },
@@ -210,14 +237,14 @@ class _RadioViewState extends State<RadioView> {
                         // ),
                       ],
                     ),
-                    _showHintBubble
+                    _hintBubbleVisible
                         ? HintBubble(
                             delayInSeconds: 4,
-                            hintText: "Try saying: ABC",
+                            hintText: _hintText,
                             onVisibilityChanged: (bool) {
                               if (bool == false) {
                                 setState(() {
-                                  _showHintBubble = bool;
+                                  _hintBubbleVisible = bool;
                                 });
                               }
                             },
@@ -233,7 +260,7 @@ class _RadioViewState extends State<RadioView> {
     );
   }
 
-  void _listen() async {
+  void _listen({Function(String resultText) onFinished}) async {
     if (!_isListening) {
       bool available = await _speech.initialize(
         onStatus: (val) => print('onStatus: $val'),
@@ -253,6 +280,7 @@ class _RadioViewState extends State<RadioView> {
     } else {
       setState(() => _isListening = false);
       _speech.stop();
+      onFinished(_text);
     }
   }
 }

@@ -17,25 +17,24 @@ final Flight newCastleToWelshpool = Flight(
             "‘Newcastle ground, GABCD, at golf apron, information Yankee, QNH 1013, request engine start’."
           ],
           towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/1.mp3",
-          hintText: "Hint: Request Engine Start?"),
+          errorHintText: "Hint: Request Engine Start?"),
       RadioTransmission(
           pilotDialogue: [
             "‘Newcastle ground, GABCD, at golf apron, information Yankee, QNH 1013, request engine start’."
           ],
           towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/2.mp3",
-          hintText: "Hint: Request Engine Start?"),
+          errorHintText: "Hint: Request Engine Start?"),
       RadioTransmission(pilotDialogue: [
         "start at time 34 Golf Alpha Bravo Charlie Delta.",
         "start approved Golf Alpha Bravo Charlie Delta"
-      ], hintText: "Hint: Say back what you heard the tower say."),
+      ], errorHintText: "Hint: Say back what you heard the tower say."),
       RadioTransmission(
           pilotDialogue: [
             "‘Newcastle ground, Golf Alpha Bravo Charlie Delta, at golf apron, request taxi"
           ],
           towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/3.mp3",
-          hintText: "Hint: Request Taxi"),
+          errorHintText: "Hint: Request Taxi"),
       RadioTransmission(
-          showFrequencyPicker: true,
           requiredFrequency: 119.70,
           requiredWords: [
             RequiredWord(wordPermutations: ["golf"]),
@@ -45,41 +44,40 @@ final Flight newCastleToWelshpool = Flight(
           pilotDialogue: [
             "Taxi holding point golf runway 25, contact newcastle tower 119.70"
           ],
-          hintText: "Hint: Confirm you heard tower correctly?"),
+          errorHintText: "Hint: Confirm you heard tower correctly?"),
       RadioTransmission(
           pilotDialogue: [
             "Newcastle tower Golf Alpha Bravo Charlie Delta at holding point golf"
           ],
           towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/4.mp3",
-          hintText: "Hint: Contact Newcastle Tower?"),
+          errorHintText: "Hint: Contact Newcastle Tower?"),
       RadioTransmission(requiredWords: [
         RequiredWord(wordPermutations: ["two five", "25"])
       ], pilotDialogue: [
         "Line up runway 25 Golf Alpha Bravo Charlie Delta"
       ], towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/5.mp3"),
       RadioTransmission(
-          requiredWords: [
-            RequiredWord(wordPermutations: [
-              "tyne bridges",
-              "tine bridges",
-              "tine bridge"
-            ]),
-            RequiredWord(wordPermutations: ["6522"]),
-            RequiredWord(wordPermutations: ["1013"])
-          ],
-          pilotDialogue: [
-            "after departure cleared to zone boundary via tyne bridges. not above altitude 2500 feet QNH 1013, squawk 6522"
-          ],
-          towerErrorResponseSoundFileLocation:
-              "tripAudio/newcastle-welshpool/7.mp3",
-          towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/6.mp3",
-          repeatPreviousMessageOnError: true),
+        requiredWords: [
+          RequiredWord(wordPermutations: [
+            "tyne bridges",
+            "tine bridges",
+            "tine bridge"
+          ]),
+          RequiredWord(wordPermutations: ["6522"]),
+          RequiredWord(wordPermutations: ["1013"])
+        ],
+        pilotDialogue: [
+          "after departure cleared to zone boundary via tyne bridges. not above altitude 2500 feet QNH 1013, squawk 6522"
+        ],
+        towerErrorResponseSoundFileLocation:
+            "tripAudio/newcastle-welshpool/7.mp3",
+        towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/6.mp3",
+      ),
       RadioTransmission(
           pilotDialogue: ["Cleared for takeoff Golf Alpha Bravo Charlie Delta"],
           towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/8.mp3",
           responseDelay: Duration(seconds: 5)),
       RadioTransmission(
-        showFrequencyPicker: true,
         requiredFrequency: 124.375,
         pilotDialogue: [
           " Contact newcastle radar 124.375 Golf Alpha Bravo Charlie Delta"
@@ -92,10 +90,9 @@ final Flight newCastleToWelshpool = Flight(
       ], towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/9.mp3"),
       RadioTransmission(
           pilotDialogue: ["Basic service Golf Charlie Delta"],
-          hintText:
+          errorHintText:
               "You are now leaving Newcastle’s ATZ and need to contact London information 124.750 for a basic service"),
       RadioTransmission(
-          showFrequencyPicker: true,
           requiredFrequency: 124.750,
           requiredWords: [
             RequiredWord(wordPermutations: ["information"])
@@ -124,7 +121,7 @@ final Flight newCastleToWelshpool = Flight(
             "Squawk 1177 with charlie, Golf Alpha Bravo Charlie Delta"
           ],
           responseDelay: Duration(seconds: 5),
-          hintText:
+          errorHintText:
               "You are now 5 miles from the Shawbury zone military air traffic zone boundary and require a ‘MATZ’ penetration. Change to shawbury zone 133.150"),
       RadioTransmission(
           requiredWords: [
@@ -136,9 +133,9 @@ final Flight newCastleToWelshpool = Flight(
           towerResponseSoundFileLocation:
               "tripAudio/newcastle-welshpool/12.mp3"),
       RadioTransmission(
-          pilotDialogue: ["squawk 7000 Golf Charlie Delta"],
-          requiredFrequency: 133.15,
-          showFrequencyPicker: true),
+        pilotDialogue: ["squawk 7000 Golf Charlie Delta"],
+        requiredFrequency: 133.15,
+      ),
       RadioTransmission(
           requiredWords: [
             RequiredWord(wordPermutations: ["basic Service"])
@@ -159,18 +156,17 @@ final Flight newCastleToWelshpool = Flight(
       ], pilotDialogue: [
         "Max penetration approved not below 2000 feet report entering and leaving the zone Golf Charlie Delta",
         "Matz penetration approved not below 2000 feet report entering and leaving the zone Golf Charlie Delta"
-      ], hintText: "You are entering Shawbury Zone"),
+      ], errorHintText: "You are entering Shawbury Zone"),
       RadioTransmission(
           pilotDialogue: [],
-          hintText: "You are leaving Shawbury Zone",
+          errorHintText: "You are leaving Shawbury Zone",
           responseDelay: Duration(seconds: 5)),
       RadioTransmission(
           pilotDialogue: [],
-          hintText:
+          errorHintText:
               " You are 5 miles to the north of Welshpool and should change to Welshpool radio 128.005",
           responseDelay: Duration(seconds: 5)),
       RadioTransmission(
-          showFrequencyPicker: true,
           requiredFrequency: 128.005,
           pilotDialogue: [
             " Golf Charlie Delta is 5 miles to the north of Welshpool and is changing to 128.005"
@@ -198,7 +194,7 @@ final Flight newCastleToWelshpool = Flight(
               "tripAudio/newcastle-welshpool/17.mp3",
           towerErrorResponseSoundFileLocation:
               "tripAudio/newcastle-welshpool/16.mp3",
-          hintText: "You are on finals for runway 22"),
+          errorHintText: "You are on finals for runway 22"),
       RadioTransmission(
           pilotDialogue: [
             "Golf Charlie Delta finals 22"
@@ -206,5 +202,5 @@ final Flight newCastleToWelshpool = Flight(
           ],
           towerResponseSoundFileLocation:
               "tripAudio/newcastle-welshpool/18.mp3",
-          hintText: "You have landed at Welshpool, Flight complete!!")
+          errorHintText: "You have landed at Welshpool, Flight complete!!")
     ]);
