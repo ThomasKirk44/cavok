@@ -1,4 +1,7 @@
+import 'package:cavok/model/radioTransmission.dart';
 import 'package:flutter/material.dart';
+
+import 'airspace.dart';
 
 class AirportFields {
   static final icao = "icao";
@@ -14,6 +17,9 @@ class AirportFields {
 }
 
 class Airport {
+  List<RadioTransmission> startingAirportConversation;
+  List<RadioTransmission> endingAirportConversation;
+  List<AirSpace> availableAirspaces;
   String icao;
   String iata;
   String name;
@@ -42,5 +48,10 @@ class Airport {
     //todo add in frequency
   }
 
-  Airport({@required this.name, @required this.frequency, @required this.icao});
+  Airport(
+      {@required this.name,
+      @required this.frequency,
+      @required this.icao,
+      this.startingAirportConversation,
+      this.endingAirportConversation});
 }

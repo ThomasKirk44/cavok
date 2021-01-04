@@ -4,10 +4,16 @@ import 'package:cavok/model/flight.dart';
 import 'package:cavok/model/radioTransmission.dart';
 import 'package:cavok/model/requiredWord.dart';
 
+//todo 1. automated Atis
+//todo 2. refactor conversations so they can be defined dynamically,
+//todo 3. refactor input forum make it cleaner
+//todo 4. pass data from setupScreen to RadioView Screen.
+//todo 5. if entered frequency is wrong play static.
+
 final Flight newCastleToWelshpool = Flight(
     startingAirport: Airports().getAirport("EGNT"),
     endingAirport: Airports().getAirport("EGCW"),
-    airspace: [
+    airspaces: [
       AirSpace(name: "Shawburry", radioFrequency: 122.10),
       AirSpace(name: "London", radioFrequency: 119.40)
     ],
