@@ -141,7 +141,7 @@ class _RadioViewState extends State<RadioView> {
   @override
   void initState() {
     super.initState();
-    Airport airport = Airport(icao: "KJFK");
+    Airport airport = Airport(fromIcaoCode: "KJFK");
     atisMetar = MetarService(currentAirport: airport);
     getData();
     _speech = stt.SpeechToText();

@@ -1,7 +1,22 @@
-import 'package:cavok/screens/radioView.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-void main() {
+import 'package:cavok/screens/setupScreen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+Map<String, dynamic> airportData = {};
+
+///Map<Name, Icao>
+Map<String, String> airportIcaoName = {};
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  airportData =
+      jsonDecode(await rootBundle.loadString('assets/json/airports.json'));
+  airportData.forEach((key, value) {
+    airportIcaoName[key] = value["name"];
+  });
+
   runApp(MyApp());
 }
 
@@ -15,7 +30,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: RadioView(),
+      home: SetupScreen(),
     );
   }
 }

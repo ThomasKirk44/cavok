@@ -1,10 +1,11 @@
 import 'package:cavok/data/airports.dart';
 import 'package:cavok/model/aircrafts.dart';
-import 'package:cavok/model/places.dart';
 import 'package:cavok/screens/radioView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
+
+import '../main.dart';
 
 class SetupScreen extends StatefulWidget {
   @override
@@ -17,8 +18,7 @@ class _SetupScreenState extends State<SetupScreen> {
   var endingAirport = "";
   var airplane = "";
   var _myActivities = ["start", "run", "test"];
-  Airports airports;
-
+  List<dynamic> airspaces = [];
   @override
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
@@ -29,7 +29,6 @@ class _SetupScreenState extends State<SetupScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    airports = Airports();
   }
 
   @override
@@ -48,10 +47,23 @@ class _SetupScreenState extends State<SetupScreen> {
               isBlank: startingAirport == "" && validator,
               title: "Starting Airport",
               pickerTitle: "Pick Airport",
-              data: Places.airports,
+              data: availableAirportNames,
               onchanged: (val) {
                 setState(() {
                   startingAirport = val;
+                  airspaces.clear();
+                  print(airportNameIcao[startingAirport]);
+                  assert(
+                      airports[airportNameIcao[val]]
+                          .availableAirspaces
+                          .isNotEmpty,
+                      "check the definition of the airport it seems like available airspaces were not added to it.");
+                  airports[airportNameIcao[startingAirport]]
+                      .availableAirspaces
+                      .forEach((element) {
+                    airspaces.add({"display": element, "value": element});
+                    print(airspaces);
+                  });
                 });
               },
             ),
@@ -64,7 +76,7 @@ class _SetupScreenState extends State<SetupScreen> {
                 });
               },
               title: "Destination Airport",
-              data: Places.airports,
+              data: availableAirportNames,
               pickerTitle: "Pick Airport",
             ),
             MultiSelectFormField(
@@ -80,16 +92,7 @@ class _SetupScreenState extends State<SetupScreen> {
                 "Select Airspaces",
                 style: TextStyle(fontSize: 16),
               ),
-              dataSource: [
-                {
-                  "display": "Shawbury",
-                  "value": "Shawbury",
-                },
-                {
-                  "display": "London",
-                  "value": "London",
-                },
-              ],
+              dataSource: airspaces,
               textField: 'display',
               valueField: 'value',
               okButtonLabel: 'OK',
