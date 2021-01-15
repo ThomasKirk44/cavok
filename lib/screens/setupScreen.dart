@@ -1,11 +1,10 @@
 import 'package:cavok/data/airports.dart';
+import 'package:cavok/data/airspaces.dart';
 import 'package:cavok/model/aircrafts.dart';
 import 'package:cavok/screens/radioView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
-
-import '../main.dart';
 
 class SetupScreen extends StatefulWidget {
   @override
@@ -14,11 +13,11 @@ class SetupScreen extends StatefulWidget {
 
 class _SetupScreenState extends State<SetupScreen> {
   bool validator = false;
-  var startingAirport = "";
-  var endingAirport = "";
+  var _startingAirport = "";
+  var _endingAirport = "";
   var airplane = "";
   var _myActivities = ["start", "run", "test"];
-  List<dynamic> airspaces = [];
+  List<dynamic> _airSpaces = [];
   @override
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
@@ -44,35 +43,35 @@ class _SetupScreenState extends State<SetupScreen> {
           children: [
             SelectorButton(
               errorText: "Starting must be selected",
-              isBlank: startingAirport == "" && validator,
+              isBlank: _startingAirport == "" && validator,
               title: "Starting Airport",
               pickerTitle: "Pick Airport",
               data: availableAirportNames,
               onchanged: (val) {
                 setState(() {
-                  startingAirport = val;
-                  airspaces.clear();
-                  print(airportNameIcao[startingAirport]);
+                  _startingAirport = val;
+                  _airSpaces.clear();
+                  print(airportNameIcao[_startingAirport]);
                   assert(
                       airports[airportNameIcao[val]]
                           .availableAirspaces
                           .isNotEmpty,
                       "check the definition of the airport it seems like available airspaces were not added to it.");
-                  airports[airportNameIcao[startingAirport]]
+                  airports[airportNameIcao[_startingAirport]]
                       .availableAirspaces
                       .forEach((element) {
-                    airspaces.add({"display": element, "value": element});
-                    print(airspaces);
+                    _airSpaces.add({"display": element, "value": element});
+                    print(_airSpaces);
                   });
                 });
               },
             ),
             SelectorButton(
               errorText: "Destination must be selected",
-              isBlank: endingAirport == "" && validator,
+              isBlank: _endingAirport == "" && validator,
               onchanged: (val) {
                 setState(() {
-                  endingAirport = val;
+                  _endingAirport = val;
                 });
               },
               title: "Destination Airport",
@@ -92,7 +91,7 @@ class _SetupScreenState extends State<SetupScreen> {
                 "Select Airspaces",
                 style: TextStyle(fontSize: 16),
               ),
-              dataSource: airspaces,
+              dataSource: _airSpaces,
               textField: 'display',
               valueField: 'value',
               okButtonLabel: 'OK',
@@ -121,14 +120,21 @@ class _SetupScreenState extends State<SetupScreen> {
                 child: Text("Start"),
                 onPressed: () {
                   if ((airplane == "") ||
-                      (startingAirport == "") ||
-                      (endingAirport == "")) {
+                      (_startingAirport == "") ||
+                      (_endingAirport == "")) {
                     setState(() {
                       validator = true;
                     });
                   } else {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => RadioView()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RadioView(
+                                  airspaces:
+                                      _airSpaces.map((e) => airSpaces[e]),
+                                  startingAirport: airports[_startingAirport],
+                                  endingAirport: airports[_endingAirport],
+                                )));
                   }
                 }),
             //FrequencyPicker()

@@ -2,6 +2,7 @@ import 'package:audioplayer/audioplayer.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cavok/model/airport.dart';
+import 'package:cavok/model/airspace.dart';
 import 'package:cavok/model/radioController.dart';
 import 'package:cavok/model/radioTransmission.dart';
 import 'package:cavok/model/requiredWord.dart';
@@ -16,11 +17,18 @@ import 'package:highlight_text/highlight_text.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class RadioView extends StatefulWidget {
+  Airport startingAirport;
+  Airport endingAirport;
+  List<AirSpace> airspaces;
+
+  RadioView({this.airspaces, this.startingAirport, this.endingAirport});
+
   @override
   _RadioViewState createState() => _RadioViewState();
 }
 
 class _RadioViewState extends State<RadioView> {
+  List<RadioTransmission> _flightConversation;
   final Map<String, HighlightedWord> _highlights = {
     'frequency': HighlightedWord(
       onTap: () => print('flutter'),
@@ -29,28 +37,7 @@ class _RadioViewState extends State<RadioView> {
         fontWeight: FontWeight.bold,
       ),
     ),
-    'voice': HighlightedWord(
-      onTap: () => print('voice'),
-      textStyle: const TextStyle(
-        color: Colors.green,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    'subscribe': HighlightedWord(
-      onTap: () => print('subscribe'),
-      textStyle: const TextStyle(
-        color: Colors.red,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    'like': HighlightedWord(
-      onTap: () => print('like'),
-      textStyle: const TextStyle(
-        color: Colors.blueAccent,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    'comment': HighlightedWord(
+    'runway': HighlightedWord(
       onTap: () => print('comment'),
       textStyle: const TextStyle(
         color: Colors.green,
@@ -141,6 +128,10 @@ class _RadioViewState extends State<RadioView> {
   @override
   void initState() {
     super.initState();
+    _flightConversation
+        .addAll(widget.startingAirport.startingAirportConversation);
+    widget.airspaces.forEach((e) => _flightConversation.addAll(e.conversation));
+    _flightConversation.addAll(widget.endingAirport.endingAirportConversation);
     Airport airport = Airport(fromIcaoCode: "KJFK");
     atisMetar = MetarService(currentAirport: airport);
     getData();
