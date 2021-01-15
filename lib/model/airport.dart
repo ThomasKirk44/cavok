@@ -30,6 +30,7 @@ class Airport {
   double lon;
   String timeZone;
   double towerFrequency;
+  String atisAudioFile;
 
   Airport(
       {@required String fromIcaoCode,
