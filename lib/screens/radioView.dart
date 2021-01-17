@@ -28,7 +28,7 @@ class RadioView extends StatefulWidget {
 }
 
 class _RadioViewState extends State<RadioView> {
-  List<RadioTransmission> _flightConversation;
+  List<RadioTransmission> _flightConversation = [];
   final Map<String, HighlightedWord> _highlights = {
     'frequency': HighlightedWord(
       onTap: () => print('flutter'),

@@ -1,6 +1,8 @@
 import 'package:cavok/data/airports.dart';
 import 'package:cavok/data/airspaces.dart';
+import 'package:cavok/main.dart';
 import 'package:cavok/model/aircrafts.dart';
+import 'package:cavok/model/airspace.dart';
 import 'package:cavok/screens/radioView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
@@ -18,6 +20,7 @@ class _SetupScreenState extends State<SetupScreen> {
   var airplane = "";
   var _myActivities = ["start", "run", "test"];
   List<dynamic> _airSpaces = [];
+  List<AirSpace> _selectedAirspaces = [];
   @override
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
@@ -50,6 +53,7 @@ class _SetupScreenState extends State<SetupScreen> {
               onchanged: (val) {
                 setState(() {
                   _startingAirport = val;
+                  print(airportIcaoName["EGNT"]);
                   _airSpaces.clear();
                   print(airportNameIcao[_startingAirport]);
                   assert(
@@ -98,10 +102,15 @@ class _SetupScreenState extends State<SetupScreen> {
               cancelButtonLabel: 'CANCEL',
               hintWidget: Text('Please choose one or more'),
               onSaved: (value) {
-                // if (value == null) return;
-                // setState(() {
-                //   _myActivities = value;
-                // });
+                print(value);
+                print('selected');
+                setState(() {
+                  value.cast<String>().forEach((element) {
+                    _selectedAirspaces.add(airSpaces[element]);
+                  });
+
+                  print(_selectedAirspaces);
+                });
               },
             ),
             SelectorButton(
@@ -126,14 +135,18 @@ class _SetupScreenState extends State<SetupScreen> {
                       validator = true;
                     });
                   } else {
+                    print("airspaces");
+                    print(airSpaces[_airSpaces]);
+
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => RadioView(
-                                  airspaces:
-                                      _airSpaces.map((e) => airSpaces[e]),
-                                  startingAirport: airports[_startingAirport],
-                                  endingAirport: airports[_endingAirport],
+                                  airspaces: _selectedAirspaces,
+                                  startingAirport: airports[
+                                      airportNameIcao[_startingAirport]],
+                                  endingAirport:
+                                      airports[airportNameIcao[_endingAirport]],
                                 )));
                   }
                 }),
