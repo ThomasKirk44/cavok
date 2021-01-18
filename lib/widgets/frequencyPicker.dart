@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 class FrequencyPicker extends StatefulWidget {
-  FrequencyPicker({@required this.onChanged, @required this.initialValue});
+  FrequencyPicker(
+      {@required this.onChanged, @required this.initialValue = "125.456"});
   Function(String) onChanged;
   String initialValue;
 
@@ -28,6 +29,9 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
     // TODO: implement initState
     super.initState();
 
+    widget.initialValue = "123.456";
+    print(widget.initialValue.length);
+    print(widget.initialValue);
     _v1 = int.parse(widget.initialValue[0]);
     _v2 = int.parse(widget.initialValue[1]);
     _v3 = int.parse(widget.initialValue[2]);

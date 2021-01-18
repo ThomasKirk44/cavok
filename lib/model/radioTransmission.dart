@@ -4,19 +4,20 @@ import 'package:flutter/foundation.dart';
 import 'package:string_similarity/string_similarity.dart';
 
 class RadioTransmission {
-  RadioTransmission(
-      {@required this.pilotDialogue,
-      @required this.towerResponseSoundFileLocation,
-      this.towerErrorResponseSoundFileLocation,
-      this.errorHintText,
-      this.showFrequencyPicker,
-      this.requiredFrequency,
-      this.requiredWords,
-      this.responseDelay = const Duration(seconds: 2),
-      this.checkForPilotDialogueMatching = true,
-      this.requiredWordsMissingHintText,
-      this.showHintBubbleWIthMessage,
-      this.informationText});
+  RadioTransmission({
+    @required this.pilotDialogue,
+    @required this.towerResponseSoundFileLocation,
+    this.towerErrorResponseSoundFileLocation,
+    this.errorHintText,
+    this.showFrequencyPicker,
+    this.requiredFrequency,
+    this.requiredWords,
+    this.responseDelay = const Duration(seconds: 4),
+    this.checkForPilotDialogueMatching = true,
+    this.requiredWordsMissingHintText,
+    this.showHintBubbleWIthMessage,
+    this.informationText,
+  });
 
   ///[pilotDialogue] questions can be asked in more than one way so a list is supplied of possible questions. to ensure the system understands what the person is trying to say.
   final List<String> pilotDialogue;
@@ -62,6 +63,7 @@ class RadioTransmission {
 
   /// responds appropriately to the [textToSpeechOutput] give from text to speech
   /// [onUndiscernableSpeech] is a callback that gives you the text that Failed
+  /// [onFinished] is a callback that notifies the view when the next transmission should be played
   void respondToPilotDialogue(
       {String textToSpeechOutput,
       Function(
@@ -70,49 +72,58 @@ class RadioTransmission {
       )
           onUndiscernableSpeech,
       Function(String) showHintBubble,
-      Function(double) showFrequencyPicker}) async {
-    if (!_requiredWordsIncluded(inTextToSpeech: textToSpeechOutput)) {
-      print("not included");
-      print(_requiredWordsIncluded(inTextToSpeech: textToSpeechOutput));
-      _player.play(towerErrorResponseSoundFileLocation);
-      _checkForNullHint(
-          callBackFunction: showHintBubble,
-          message: "try saying: ${pilotDialogue[0]}");
+      Function(double) showFrequencyPicker,
+      Function(bool) onFinished}) async {
+    if (requiredWords != null) {
+      if (!_requiredWordsIncluded(forString: textToSpeechOutput)) {
+        print("not included");
+        print(_requiredWordsIncluded(forString: textToSpeechOutput));
+        if (towerResponseSoundFileLocation != null) {
+          _player.play(towerErrorResponseSoundFileLocation);
+        }
+        _checkForNullHint(
+            callBackFunction: showHintBubble,
+            message: "try saying: ${pilotDialogue[0]}");
+      }
+      _checkForNullFrequency(callBackFunction: showFrequencyPicker);
     } else {
-      if (towerResponseSoundFileLocation != null) {
-        if (checkForPilotDialogueMatching) {
-          double checkResult = 0;
-          pilotDialogue.forEach((element) {
-            if (textToSpeechOutput.similarityTo(element) > checkResult) {
-              checkResult = textToSpeechOutput.similarityTo(element);
-            }
-          });
-          if (checkResult > 0.5) {
-            await Future.delayed(responseDelay);
-            _player.play(towerResponseSoundFileLocation);
-            _checkForNullHint(
-                callBackFunction: showHintBubble, message: informationText);
-          } else {
-            await Future.delayed(responseDelay);
-            _player.play(_sayAgainMessageLocation).whenComplete(() {
-              _checkForNullFrequency(callBackFunction: showFrequencyPicker);
-              _checkForNullHint(
-                  callBackFunction: showHintBubble,
-                  message: "try saying: ${pilotDialogue[0]}");
-            });
-            onUndiscernableSpeech(textToSpeechOutput, checkResult);
+      //states what the pilot said is the correct thing,
+      //what the pilot said wasnt the right thing
+      //  was wrong because required words were missing
+      //  was wrong just because the match rating wasn't high enough.
+
+      if (checkForPilotDialogueMatching) {
+        double checkResult = 0;
+        pilotDialogue.forEach((element) {
+          if (textToSpeechOutput.similarityTo(element) > checkResult) {
+            checkResult = textToSpeechOutput.similarityTo(element);
           }
+        });
+        if (checkResult > 0.5) {
+          await Future.delayed(responseDelay);
+          if (towerResponseSoundFileLocation != null) {
+            _player.play(towerResponseSoundFileLocation);
+          }
+          _checkForNullHint(
+              callBackFunction: showHintBubble, message: informationText);
+          onFinished(true);
         } else {
-          _player.play(towerResponseSoundFileLocation).whenComplete(() {
+          await Future.delayed(responseDelay);
+          _player.play(_sayAgainMessageLocation).whenComplete(() {
             _checkForNullFrequency(callBackFunction: showFrequencyPicker);
             _checkForNullHint(
-                callBackFunction: showHintBubble, message: informationText);
+                callBackFunction: showHintBubble,
+                message: "try saying: ${pilotDialogue[0]}");
           });
+          onUndiscernableSpeech(textToSpeechOutput, checkResult);
         }
       } else {
-        _checkForNullFrequency(callBackFunction: showFrequencyPicker);
-        _checkForNullHint(
-            callBackFunction: showHintBubble, message: informationText);
+        _player.play(towerResponseSoundFileLocation).whenComplete(() {
+          _checkForNullFrequency(callBackFunction: showFrequencyPicker);
+          _checkForNullHint(
+              callBackFunction: showHintBubble, message: informationText);
+          onFinished(true);
+        });
       }
     }
   }
@@ -129,22 +140,28 @@ class RadioTransmission {
     }
   }
 
-  bool _requiredWordsIncluded({String inTextToSpeech}) {
+  bool _checkRequiredWord(RequiredWord word, String checkInString) {
+    bool isIncluded = false;
+
+    for (var each in word.wordPermutations) {
+      if (checkInString.toLowerCase().contains(each.toLowerCase())) {
+        return true;
+      }
+    }
+    return isIncluded;
+  }
+
+  bool _requiredWordsIncluded({String forString}) {
     assert(requiredWords != null,
         "Error Tried to check for missing words but requiredWords == null");
-    outerloop:
+    //all required words must be present
+    //for each required word there must be at least one required word that is included.
+
     for (var requiredWord in requiredWords) {
-      bool wordWasIncluded = false;
-      for (var word in requiredWord.wordPermutations) {
-        if (inTextToSpeech.toLowerCase().contains(word.toLowerCase())) {
-          wordWasIncluded = true;
-          continue outerloop;
-        }
-      }
-      if (!wordWasIncluded) {
+      print(
+          "requiredWord ${requiredWord.wordPermutations[0]} : ${_checkRequiredWord(requiredWord, forString)}");
+      if (!_checkRequiredWord(requiredWord, forString)) {
         return false;
-      } else {
-        wordWasIncluded = false;
       }
     }
     return true;

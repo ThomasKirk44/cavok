@@ -1,11 +1,12 @@
 import 'package:audioplayer/audioplayer.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cavok/data/airports.dart';
+import 'package:cavok/data/airspaces.dart';
 import 'package:cavok/model/airport.dart';
 import 'package:cavok/model/airspace.dart';
 import 'package:cavok/model/radioController.dart';
 import 'package:cavok/model/radioTransmission.dart';
-import 'package:cavok/model/requiredWord.dart';
 import 'package:cavok/services/metarService.dart';
 import 'package:cavok/widgets/controllerMessageBubble.dart';
 import 'package:cavok/widgets/frequencyPicker.dart';
@@ -68,6 +69,8 @@ class _RadioViewState extends State<RadioView> {
   double _confidence = 1.0;
   String _currentFrequency = "000.00";
   String atisData;
+  int _currentMessageIndex = 0;
+  RadioTransmission _currentTransmission;
   final player = AudioCache();
 
   void showHintBubble(String withText) {
@@ -78,7 +81,7 @@ class _RadioViewState extends State<RadioView> {
   }
 
   void showFrequencyPicker(BuildContext context) {
-    Dialog errorDialog = Dialog(
+    Dialog frequencyPickerDialog = Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       //this right here
       child: Container(
@@ -95,6 +98,7 @@ class _RadioViewState extends State<RadioView> {
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
+            Text(""),
             SizedBox(
               height: 20,
             ),
@@ -118,7 +122,8 @@ class _RadioViewState extends State<RadioView> {
       ),
     );
     showDialog(
-        context: context, builder: (BuildContext context) => errorDialog);
+        context: context,
+        builder: (BuildContext context) => frequencyPickerDialog);
   }
 
   Future<void> getData() async {
@@ -128,10 +133,16 @@ class _RadioViewState extends State<RadioView> {
   @override
   void initState() {
     super.initState();
-    _flightConversation
-        .addAll(widget.startingAirport.startingAirportConversation);
-    widget.airspaces.forEach((e) => _flightConversation.addAll(e.conversation));
-    _flightConversation.addAll(widget.endingAirport.endingAirportConversation);
+//todo remove this code in production this is just for testing purposes
+    _flightConversation.addAll(airports["EGNT"].startingAirportConversation);
+    airSpaces.forEach((e, j) => _flightConversation.addAll(j.conversation));
+    _flightConversation.addAll(airports["EGCW"].endingAirportConversation);
+
+    // _flightConversation
+    //     .addAll(widget.startingAirport.startingAirportConversation);
+    // widget.airspaces.forEach((e) => _flightConversation.addAll(e.conversation));
+    // _flightConversation.addAll(widget.endingAirport.endingAirportConversation);
+    showHintBubble(_flightConversation[0].informationText);
     Airport airport = Airport(fromIcaoCode: "KJFK");
     atisMetar = MetarService(currentAirport: airport);
     getData();
@@ -156,30 +167,34 @@ class _RadioViewState extends State<RadioView> {
         child: FloatingActionButton(
           backgroundColor: _isListening ? Colors.red : Colors.green,
           onPressed: () async {
+            print("current index: $_currentMessageIndex");
             _listen(onFinished: (result) {
-              RadioTransmission(
-                      showHintBubbleWIthMessage: (message) {
-                        showHintBubble(message);
-                      },
-                      informationText: "change frequency to 126.35",
-                      pilotDialogue: ["this is a test"],
-                      towerResponseSoundFileLocation:
-                          "tripAudio/newcastle-welshpool/1.mp3",
-                      towerErrorResponseSoundFileLocation:
-                          "tripAudio/newcastle-welshpool/3.mp3",
-                      requiredWords: [
-                        RequiredWord(wordPermutations: ["test"])
-                      ],
-                      errorHintText: "hint error hint")
-                  .respondToPilotDialogue(
-                      textToSpeechOutput: result,
-                      onUndiscernableSpeech: (failedText, clarity) {
-                        print(result);
-                      });
+              print(result);
+              _flightConversation[_currentMessageIndex].respondToPilotDialogue(
+                  textToSpeechOutput: result,
+                  onUndiscernableSpeech: (failedText, clarity) {
+                    print(result);
+                  },
+                  showFrequencyPicker: (frenquency) {
+                    showFrequencyPicker(context);
+                  },
+                  showHintBubble: (message) {
+                    showHintBubble(message);
+                  },
+                  onFinished: (bool) {
+                    if (bool) {
+                      if (_flightConversation.length - 1 !=
+                          _currentMessageIndex) {
+                        setState(() {
+                          _currentMessageIndex += 1;
+                        });
+                      } else {
+                        showHintBubble("Your flight is complete.");
+                      }
+                    }
+                  });
             });
-            print("speak");
             // await airTrafficControl.speakPhonetic(forWord: atisData);
-            RadioTransmission();
 
             //showFrequencyPicker(context);
           },

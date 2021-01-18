@@ -21,187 +21,168 @@ Map<String, String> airportNameIcao = {
 ///include all the properties and conversations last for readability.
 final Map<String, Airport> airports = {
   "EGNT": Airport(
-      availableAirspaces: [AirSpaceNames.london, AirSpaceNames.shawbury],
-      fromIcaoCode: "EGNT",
-      towerFrequency: 119.70,
-      endingAirportConversation: [
-        RadioTransmission(
-            pilotDialogue: ["request frequency change to 124.375"],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/9.mp3",
-            errorHintText: "Correct Frequency?"),
-        RadioTransmission(
-            pilotDialogue: [
-              "Newcastle approach 124.375 squawk 7000"
-            ],
-            requiredWords: [
-              RequiredWord(wordPermutations: [
-                "one two four dot three seven five",
-                "124.375"
-              ]),
-              RequiredWord(wordPermutations: ["seven thousand", "7000"])
-            ],
-            requiredFrequency: 124.375,
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/10.mp3",
-            informationText:
-                "Enter Frequency and then get basic service to figure out joining instructions. you are 10 miles south of newcastle at 2000ft"),
-        RadioTransmission(
-            pilotDialogue: [
-              "Newcastle approach golf alpha bravo charlie delta request basic service and joining instructions"
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/11.mp3"),
-        RadioTransmission(
-            checkForPilotDialogueMatching: false,
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/12.mp3"),
-        RadioTransmission(
-            pilotDialogue: [
-              "cleared to join right base runway 25 via the tyne bridges, report overhead tyne bridges, golf alpha bravo charlie delta "
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/13.mp3",
-            informationText: "You are overhead the tyne bridges"),
-        RadioTransmission(
-            pilotDialogue: [
-              "golf alpha bravo charlie delta overhead tyne bridges"
-            ],
-            requiredWords: [
-              RequiredWord(wordPermutations: ["bridge", "bridges"])
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/14.mp3"),
-        RadioTransmission(
-            pilotDialogue: [
-              "Contact Newcastle Tower one one niner seven zero",
-              "contact newcastle tower one one nine seven zero"
-            ],
-            requiredFrequency: 119.70,
-            informationText: "you are position for right base runway two five"),
-        RadioTransmission(
-            pilotDialogue: [
-              "newcastle tower golf alpha bravo charlie delta possitioning for right base runway two five"
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/15.mp3"),
-        RadioTransmission(pilotDialogue: [
-          "Join right base runway two five quebec november hotel 1011 golf alpha bravo charlie delta"
-        ], informationText: "You are on right base runway two five to land"),
-        RadioTransmission(
-            pilotDialogue: [
-              "golf alpha bravo charlie delta right base runway two five to land"
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/16.mp3"),
-        RadioTransmission(
-            pilotDialogue: ["golf alpha bravo charlie delta final two five"],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/17.mp3",
-            informationText: "You are on final for runway two five"),
-        RadioTransmission(
-            pilotDialogue: [
-              "golf alpha bravo charlie delta request taxi to golf alpha Apron"
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/18.mp3",
-            informationText:
-                "You have landed and need to request a taxi to GA apron"),
-        RadioTransmission(informationText: "Flight Complete")
-      ],
-      startingAirportConversation: [
-        RadioTransmission(
-            pilotDialogue: [
-              "‘Newcastle ground, GABCD, at golf apron, information Yankee, QNH 1013, request engine start’."
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/1.mp3",
-            errorHintText: "Hint: Request Engine Start?"),
-        RadioTransmission(
-            pilotDialogue: [
-              "‘Newcastle ground, GABCD, at golf apron, information Yankee, QNH 1013, request engine start’."
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/2.mp3",
-            errorHintText: "Hint: Request Engine Start?"),
-        RadioTransmission(pilotDialogue: [
-          "start at time 34 Golf Alpha Bravo Charlie Delta.",
-          "start approved Golf Alpha Bravo Charlie Delta"
-        ], errorHintText: "Hint: Say back what you heard the tower say."),
-        RadioTransmission(
-            pilotDialogue: [
-              "‘Newcastle ground, Golf Alpha Bravo Charlie Delta, at golf apron, request taxi"
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/3.mp3",
-            errorHintText: "Hint: Request Taxi"),
-        RadioTransmission(
-            requiredFrequency: 119.70,
-            requiredWords: [
-              RequiredWord(wordPermutations: ["golf"]),
-              RequiredWord(wordPermutations: ["119.70"]),
-              RequiredWord(wordPermutations: ["two five"])
-            ],
-            pilotDialogue: [
-              "Taxi holding point golf runway 25, contact newcastle tower 119.70"
-            ],
-            errorHintText: "Hint: Confirm you heard tower correctly?"),
-        RadioTransmission(
-            pilotDialogue: [
-              "Newcastle tower Golf Alpha Bravo Charlie Delta at holding point golf"
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/4.mp3",
-            errorHintText: "Hint: Contact Newcastle Tower?"),
-        RadioTransmission(
-            requiredWords: [
-              RequiredWord(wordPermutations: ["two five", "25"])
-            ],
-            pilotDialogue: [
-              "Line up runway 25 Golf Alpha Bravo Charlie Delta"
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/5.mp3"),
-        RadioTransmission(
+    availableAirspaces: [AirSpaceNames.london, AirSpaceNames.shawbury],
+    fromIcaoCode: "EGNT",
+    towerFrequency: 119.70,
+    startingAirportConversation: [
+      RadioTransmission(
+          informationText:
+              "You are at the Newcastle airport request engine start.",
+          pilotDialogue: [
+            "‘Newcastle ground, GABCD, at golf apron, information Yankee, QNH 1013, request engine start’."
+          ],
+          towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/1.mp3",
+          errorHintText: "Hint: Request Engine Start?"),
+      RadioTransmission(pilotDialogue: [
+        "start at time 34 Golf Alpha Bravo Charlie Delta.",
+        "start approved Golf Alpha Bravo Charlie Delta"
+      ], errorHintText: "Hint: Say back what you heard the tower say."),
+      RadioTransmission(
+          pilotDialogue: [
+            "‘Newcastle ground, Golf Alpha Bravo Charlie Delta, at golf apron, request taxi"
+          ],
+          towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/3.mp3",
+          errorHintText: "Hint: Request Taxi"),
+      RadioTransmission(
+          requiredFrequency: 119.70,
+          requiredWords: [
+            RequiredWord(wordPermutations: ["golf"]),
+            RequiredWord(wordPermutations: ["119.70", "11970"]),
+            RequiredWord(wordPermutations: ["two five", "25"])
+          ],
+          pilotDialogue: [
+            "Taxi holding point golf runway 25, contact newcastle tower 119.70"
+          ],
+          errorHintText: "Hint: Confirm you heard tower correctly?"),
+      RadioTransmission(
+          pilotDialogue: [
+            "Newcastle tower Golf Alpha Bravo Charlie Delta at holding point golf"
+          ],
+          towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/4.mp3",
+          errorHintText: "Hint: Contact Newcastle Tower?"),
+      RadioTransmission(requiredWords: [
+        RequiredWord(wordPermutations: ["two five", "25"])
+      ], pilotDialogue: [
+        "Line up runway 25 Golf Alpha Bravo Charlie Delta"
+      ], towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/5.mp3"),
+      RadioTransmission(
+        requiredWords: [
+          RequiredWord(wordPermutations: [
+            "tyne bridges",
+            "tine bridges",
+            "tine bridge"
+          ]),
+          RequiredWord(wordPermutations: ["6522"]),
+          RequiredWord(wordPermutations: ["1013"])
+        ],
+        pilotDialogue: [
+          "after departure cleared to zone boundary via tyne bridges. not above altitude 2500 feet QNH 1013, squawk 6522"
+        ],
+        towerErrorResponseSoundFileLocation:
+            "tripAudio/newcastle-welshpool/7.mp3",
+        towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/6.mp3",
+      ),
+      RadioTransmission(
+          pilotDialogue: ["Cleared for takeoff Golf Alpha Bravo Charlie Delta"],
+          towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/8.mp3",
+          responseDelay: Duration(seconds: 5)),
+      RadioTransmission(
+        requiredFrequency: 124.375,
+        pilotDialogue: [
+          "Contact newcastle radar 124.375 Golf Alpha Bravo Charlie Delta"
+        ],
+      ),
+      RadioTransmission(requiredWords: [
+        RequiredWord(wordPermutations: ["radar"])
+      ], pilotDialogue: [
+        "Newcastle radar Golf Alpha Bravo Charlie Delta"
+      ], towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/9.mp3"),
+    ],
+    endingAirportConversation: [
+      RadioTransmission(
+          pilotDialogue: ["request frequency change to 124.375"],
+          towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/9.mp3",
+          errorHintText: "Correct Frequency?"),
+      RadioTransmission(
+          pilotDialogue: [
+            "Newcastle approach 124.375 squawk 7000"
+          ],
           requiredWords: [
             RequiredWord(wordPermutations: [
-              "tyne bridges",
-              "tine bridges",
-              "tine bridge"
+              "one two four dot three seven five",
+              "124.375"
             ]),
-            RequiredWord(wordPermutations: ["6522"]),
-            RequiredWord(wordPermutations: ["1013"])
+            RequiredWord(wordPermutations: ["seven thousand", "7000"])
           ],
-          pilotDialogue: [
-            "after departure cleared to zone boundary via tyne bridges. not above altitude 2500 feet QNH 1013, squawk 6522"
-          ],
-          towerErrorResponseSoundFileLocation:
-              "tripAudio/newcastle-welshpool/7.mp3",
-          towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/6.mp3",
-        ),
-        RadioTransmission(
-            pilotDialogue: [
-              "Cleared for takeoff Golf Alpha Bravo Charlie Delta"
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/8.mp3",
-            responseDelay: Duration(seconds: 5)),
-        RadioTransmission(
           requiredFrequency: 124.375,
+          towerResponseSoundFileLocation:
+              "tripAudio/newcastle-welshpool/10.mp3",
+          informationText:
+              "Enter Frequency and then get basic service to figure out joining instructions. you are 10 miles south of newcastle at 2000ft"),
+      RadioTransmission(
           pilotDialogue: [
-            "Contact newcastle radar 124.375 Golf Alpha Bravo Charlie Delta"
+            "Newcastle approach golf alpha bravo charlie delta request basic service and joining instructions"
           ],
-        ),
-        RadioTransmission(
-            requiredWords: [
-              RequiredWord(wordPermutations: ["radar"])
-            ],
-            pilotDialogue: [
-              "Newcastle radar Golf Alpha Bravo Charlie Delta"
-            ],
-            towerResponseSoundFileLocation:
-                "tripAudio/newcastle-welshpool/9.mp3"),
-      ]),
+          towerResponseSoundFileLocation:
+              "tripAudio/newcastle-welshpool/11.mp3"),
+      RadioTransmission(
+          checkForPilotDialogueMatching: false,
+          towerResponseSoundFileLocation:
+              "tripAudio/newcastle-welshpool/12.mp3"),
+      RadioTransmission(
+          pilotDialogue: [
+            "cleared to join right base runway 25 via the tyne bridges, report overhead tyne bridges, golf alpha bravo charlie delta "
+          ],
+          towerResponseSoundFileLocation:
+              "tripAudio/newcastle-welshpool/13.mp3",
+          informationText: "You are overhead the tyne bridges"),
+      RadioTransmission(
+          pilotDialogue: [
+            "golf alpha bravo charlie delta overhead tyne bridges"
+          ],
+          requiredWords: [
+            RequiredWord(wordPermutations: ["bridge", "bridges"])
+          ],
+          towerResponseSoundFileLocation:
+              "tripAudio/newcastle-welshpool/14.mp3"),
+      RadioTransmission(
+          pilotDialogue: [
+            "Contact Newcastle Tower one one niner seven zero",
+            "contact newcastle tower one one nine seven zero"
+          ],
+          requiredFrequency: 119.70,
+          informationText: "you are position for right base runway two five"),
+      RadioTransmission(
+          pilotDialogue: [
+            "newcastle tower golf alpha bravo charlie delta possitioning for right base runway two five"
+          ],
+          towerResponseSoundFileLocation:
+              "tripAudio/newcastle-welshpool/15.mp3"),
+      RadioTransmission(pilotDialogue: [
+        "Join right base runway two five quebec november hotel 1011 golf alpha bravo charlie delta"
+      ], informationText: "You are on right base runway two five to land"),
+      RadioTransmission(
+          pilotDialogue: [
+            "golf alpha bravo charlie delta right base runway two five to land"
+          ],
+          towerResponseSoundFileLocation:
+              "tripAudio/newcastle-welshpool/16.mp3"),
+      RadioTransmission(
+          pilotDialogue: ["golf alpha bravo charlie delta final two five"],
+          towerResponseSoundFileLocation:
+              "tripAudio/newcastle-welshpool/17.mp3",
+          informationText: "You are on final for runway two five"),
+      RadioTransmission(
+          pilotDialogue: [
+            "golf alpha bravo charlie delta request taxi to golf alpha Apron"
+          ],
+          towerResponseSoundFileLocation:
+              "tripAudio/newcastle-welshpool/18.mp3",
+          informationText:
+              "You have landed and need to request a taxi to GA apron"),
+      RadioTransmission(informationText: "Flight Complete")
+    ],
+  ),
   "EGCW": Airport(
       fromIcaoCode: "EGCW",
       towerFrequency: 128.00,
