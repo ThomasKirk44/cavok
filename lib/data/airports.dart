@@ -25,24 +25,24 @@ final Map<String, Airport> airports = {
     fromIcaoCode: "EGNT",
     towerFrequency: 119.70,
     startingAirportConversation: [
-      RadioTransmission(
-          startingHintMessage:
-              "You are at the Newcastle airport request engine start.",
-          pilotDialogue: [
-            "‘Newcastle ground, GABCD, at golf apron, information Yankee, QNH 1013, request engine start’."
-          ],
-          towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/1.mp3",
-          errorHintMessage: "Hint: Request Engine Start?"),
-      RadioTransmission(pilotDialogue: [
-        "start at time 34 Golf Alpha Bravo Charlie Delta.",
-        "start approved Golf Alpha Bravo Charlie Delta"
-      ], errorHintMessage: "Hint: Say back what you heard the tower say."),
-      RadioTransmission(
-          pilotDialogue: [
-            "‘Newcastle ground, Golf Alpha Bravo Charlie Delta, at golf apron, request taxi"
-          ],
-          towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/3.mp3",
-          errorHintMessage: "Hint: Request Taxi"),
+      // RadioTransmission(
+      //     startingHintMessage:
+      //         "You are at the Newcastle airport request engine start.",
+      //     pilotDialogue: [
+      //       "‘Newcastle ground, GABCD, at golf apron, information Yankee, QNH 1013, request engine start’."
+      //     ],
+      //     towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/1.mp3",
+      //     errorHintMessage: "Hint: Request Engine Start?"),
+      // RadioTransmission(pilotDialogue: [
+      //   "start at time 34 Golf Alpha Bravo Charlie Delta.",
+      //   "start approved Golf Alpha Bravo Charlie Delta"
+      // ], errorHintMessage: "Hint: Say back what you heard the tower say."),
+      // RadioTransmission(
+      //     pilotDialogue: [
+      //       "‘Newcastle ground, Golf Alpha Bravo Charlie Delta, at golf apron, request taxi"
+      //     ],
+      //     towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/3.mp3",
+      //     errorHintMessage: "Hint: Request Taxi"),
       RadioTransmission(
           requiredFrequency: 119.70,
           requiredWords: [

@@ -65,7 +65,7 @@ class _RadioViewState extends State<RadioView> {
   bool _isListening = false;
   bool _hintBubbleVisible = false;
   String _text = 'Press the button and start speaking';
-  String _hintText;
+  String _hintText = "k";
   double _confidence = 1.0;
   String _currentFrequency = "000.00";
   String atisData;
@@ -74,13 +74,17 @@ class _RadioViewState extends State<RadioView> {
   final player = AudioCache();
 
   void showHintBubble(String withText) {
+    print(withText);
+    assert(withText != null, "text is null");
     setState(() {
       _hintText = withText;
       _hintBubbleVisible = !_hintBubbleVisible;
     });
   }
 
-  void showFrequencyPicker(BuildContext context) {
+  void showFrequencyPicker(
+      BuildContext context, double frequency, bool validFrequency,
+      {Function onComplete}) {
     Dialog frequencyPickerDialog = Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       //this right here
@@ -98,7 +102,13 @@ class _RadioViewState extends State<RadioView> {
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
-            Text(""),
+            !validFrequency
+                ? Text("Incorrect Frequency",
+                    style: TextStyle(
+                        color: Colors.redAccent,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300))
+                : Text(""),
             SizedBox(
               height: 20,
             ),
@@ -106,12 +116,14 @@ class _RadioViewState extends State<RadioView> {
               initialValue: _currentFrequency.toString(),
               onChanged: (value) {
                 _currentFrequency = value;
+                print(_currentFrequency);
+                print(frequency == double.parse(_currentFrequency));
               },
             ),
             FlatButton(
                 onPressed: () {
                   print(_currentFrequency);
-                  Navigator.of(context).pop();
+                  onComplete();
                 },
                 child: Text(
                   'Change',
@@ -124,6 +136,25 @@ class _RadioViewState extends State<RadioView> {
     showDialog(
         context: context,
         builder: (BuildContext context) => frequencyPickerDialog);
+  }
+
+  void _recursiveFrequencyPicker(double frequency, bool validFrequency) async {
+    await showFrequencyPicker(context, frequency, validFrequency,
+        onComplete: () {
+      if (frequency != double.parse(_currentFrequency)) {
+        player
+            .play("tripAudio/generic/static.wav")
+            .timeout(Duration(seconds: 2))
+            .whenComplete(() {
+          Navigator.of(context).pop();
+          _recursiveFrequencyPicker(frequency, false);
+        });
+      } else {
+        Navigator.of(context).pop();
+        showHintBubble(
+            "You are on the right frequency. ${_flightConversation[_currentMessageIndex].initialMessage}");
+      }
+    });
   }
 
   Future<void> getData() async {
@@ -142,7 +173,7 @@ class _RadioViewState extends State<RadioView> {
     //     .addAll(widget.startingAirport.startingAirportConversation);
     // widget.airspaces.forEach((e) => _flightConversation.addAll(e.conversation));
     // _flightConversation.addAll(widget.endingAirport.endingAirportConversation);
-    showHintBubble(_flightConversation[0].startingHintMessage);
+    showHintBubble(_flightConversation[0].initialMessage);
     Airport airport = Airport(fromIcaoCode: "KJFK");
     atisMetar = MetarService(currentAirport: airport);
     getData();
@@ -175,8 +206,8 @@ class _RadioViewState extends State<RadioView> {
                   onUndiscernableSpeech: (failedText, clarity) {
                     print(result);
                   },
-                  showFrequencyPicker: (frenquency) {
-                    showFrequencyPicker(context);
+                  showFrequencyPicker: (frenq) {
+                    _recursiveFrequencyPicker(frenq, true);
                   },
                   showHintBubble: (message) {
                     showHintBubble(message);

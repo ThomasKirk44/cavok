@@ -55,6 +55,15 @@ class RadioTransmission {
   /// responds appropriately to the [textToSpeechOutput] give from text to speech
   /// [onUndiscernableSpeech] is a callback that gives you the text that Failed
   /// [onFinished] is a callback that notifies the view when the next transmission should be played
+
+  String get initialMessage {
+    if (startingHintMessage != null) {
+      return startingHintMessage;
+    } else {
+      return "Try Saying: ${pilotDialogue[0]}";
+    }
+  }
+
   void respondToPilotDialogue(
       {String textToSpeechOutput,
       Function(
@@ -66,12 +75,8 @@ class RadioTransmission {
       Function(double) showFrequencyPicker,
       Function(bool) onFinished,
       Function(bool) onRequiredNotFound}) async {
-    //states what the pilot said is the correct thing,
-    //what the pilot said wasnt the right thing
-    //  was wrong because required words were missing
-    //  was wrong just because the match rating wasn't high enough.
     _checkForNullHint(
-        callBackFunction: showHintBubble, message: startingHintMessage);
+        callBackFunction: showHintBubble, message: initialMessage);
 
     if (checkForPilotDialogueMatching) {
       double checkResult = 0;
@@ -81,12 +86,12 @@ class RadioTransmission {
         }
       });
       if (checkResult < 0.5 ||
-          ((requiredWords.isNotEmpty || requiredWords != null) &&
+          ((requiredWords != null) &&
               (!_requiredWordsIncluded(inString: textToSpeechOutput)))) {
         print("required words not included:");
         _playErrorMessage();
         _showPilotWhatToSay(showHintBubble);
-        onFinished(true);
+        onFinished(false);
       } else {
         _playTowerResponseAndShowAppropriateDialogues(
             hintCallBack: showHintBubble,
