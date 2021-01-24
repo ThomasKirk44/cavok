@@ -26,23 +26,23 @@ final Map<String, Airport> airports = {
     towerFrequency: 119.70,
     startingAirportConversation: [
       RadioTransmission(
-          informationText:
+          startingHintMessage:
               "You are at the Newcastle airport request engine start.",
           pilotDialogue: [
             "‘Newcastle ground, GABCD, at golf apron, information Yankee, QNH 1013, request engine start’."
           ],
           towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/1.mp3",
-          errorHintText: "Hint: Request Engine Start?"),
+          errorHintMessage: "Hint: Request Engine Start?"),
       RadioTransmission(pilotDialogue: [
         "start at time 34 Golf Alpha Bravo Charlie Delta.",
         "start approved Golf Alpha Bravo Charlie Delta"
-      ], errorHintText: "Hint: Say back what you heard the tower say."),
+      ], errorHintMessage: "Hint: Say back what you heard the tower say."),
       RadioTransmission(
           pilotDialogue: [
             "‘Newcastle ground, Golf Alpha Bravo Charlie Delta, at golf apron, request taxi"
           ],
           towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/3.mp3",
-          errorHintText: "Hint: Request Taxi"),
+          errorHintMessage: "Hint: Request Taxi"),
       RadioTransmission(
           requiredFrequency: 119.70,
           requiredWords: [
@@ -53,13 +53,13 @@ final Map<String, Airport> airports = {
           pilotDialogue: [
             "Taxi holding point golf runway 25, contact newcastle tower 119.70"
           ],
-          errorHintText: "Hint: Confirm you heard tower correctly?"),
+          errorHintMessage: "Hint: Confirm you heard tower correctly?"),
       RadioTransmission(
           pilotDialogue: [
             "Newcastle tower Golf Alpha Bravo Charlie Delta at holding point golf"
           ],
           towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/4.mp3",
-          errorHintText: "Hint: Contact Newcastle Tower?"),
+          errorHintMessage: "Hint: Contact Newcastle Tower?"),
       RadioTransmission(requiredWords: [
         RequiredWord(wordPermutations: ["two five", "25"])
       ], pilotDialogue: [
@@ -102,7 +102,7 @@ final Map<String, Airport> airports = {
       RadioTransmission(
           pilotDialogue: ["request frequency change to 124.375"],
           towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/9.mp3",
-          errorHintText: "Correct Frequency?"),
+          errorHintMessage: "Correct Frequency?"),
       RadioTransmission(
           pilotDialogue: [
             "Newcastle approach 124.375 squawk 7000"
@@ -117,7 +117,7 @@ final Map<String, Airport> airports = {
           requiredFrequency: 124.375,
           towerResponseSoundFileLocation:
               "tripAudio/newcastle-welshpool/10.mp3",
-          informationText:
+          endingHintMessage:
               "Enter Frequency and then get basic service to figure out joining instructions. you are 10 miles south of newcastle at 2000ft"),
       RadioTransmission(
           pilotDialogue: [
@@ -135,7 +135,7 @@ final Map<String, Airport> airports = {
           ],
           towerResponseSoundFileLocation:
               "tripAudio/newcastle-welshpool/13.mp3",
-          informationText: "You are overhead the tyne bridges"),
+          startingHintMessage: "You are overhead the tyne bridges"),
       RadioTransmission(
           pilotDialogue: [
             "golf alpha bravo charlie delta overhead tyne bridges"
@@ -151,7 +151,8 @@ final Map<String, Airport> airports = {
             "contact newcastle tower one one nine seven zero"
           ],
           requiredFrequency: 119.70,
-          informationText: "you are position for right base runway two five"),
+          endingHintMessage:
+              "you are positioned for right base runway two five"),
       RadioTransmission(
           pilotDialogue: [
             "newcastle tower golf alpha bravo charlie delta possitioning for right base runway two five"
@@ -160,7 +161,7 @@ final Map<String, Airport> airports = {
               "tripAudio/newcastle-welshpool/15.mp3"),
       RadioTransmission(pilotDialogue: [
         "Join right base runway two five quebec november hotel 1011 golf alpha bravo charlie delta"
-      ], informationText: "You are on right base runway two five to land"),
+      ], endingHintMessage: "You are on right base runway two five to land"),
       RadioTransmission(
           pilotDialogue: [
             "golf alpha bravo charlie delta right base runway two five to land"
@@ -171,16 +172,16 @@ final Map<String, Airport> airports = {
           pilotDialogue: ["golf alpha bravo charlie delta final two five"],
           towerResponseSoundFileLocation:
               "tripAudio/newcastle-welshpool/17.mp3",
-          informationText: "You are on final for runway two five"),
+          startingHintMessage: "You are on final for runway two five"),
       RadioTransmission(
           pilotDialogue: [
             "golf alpha bravo charlie delta request taxi to golf alpha Apron"
           ],
           towerResponseSoundFileLocation:
               "tripAudio/newcastle-welshpool/18.mp3",
-          informationText:
+          startingHintMessage:
               "You have landed and need to request a taxi to GA apron"),
-      RadioTransmission(informationText: "Flight Complete")
+      RadioTransmission(startingHintMessage: "Flight Complete")
     ],
   ),
   "EGCW": Airport(
@@ -193,7 +194,7 @@ final Map<String, Airport> airports = {
       endingAirportConversation: [
         RadioTransmission(
             pilotDialogue: [],
-            errorHintText:
+            errorHintMessage:
                 " You are 5 miles to the north of Welshpool and should change to Welshpool radio 128.005",
             responseDelay: Duration(seconds: 5)),
         RadioTransmission(
@@ -225,7 +226,7 @@ final Map<String, Airport> airports = {
                 "tripAudio/newcastle-welshpool/17.mp3",
             towerErrorResponseSoundFileLocation:
                 "tripAudio/newcastle-welshpool/16.mp3",
-            errorHintText: "You are on finals for runway 22"),
+            errorHintMessage: "You are on finals for runway 22"),
         RadioTransmission(
             pilotDialogue: [
               "Golf Charlie Delta finals 22"
@@ -233,7 +234,8 @@ final Map<String, Airport> airports = {
             ],
             towerResponseSoundFileLocation:
                 "tripAudio/newcastle-welshpool/18.mp3",
-            errorHintText: "You have landed at Welshpool, Flight complete!!"),
+            errorHintMessage:
+                "You have landed at Welshpool, Flight complete!!"),
       ],
       startingAirportConversation: [
         RadioTransmission(
@@ -243,7 +245,7 @@ final Map<String, Airport> airports = {
             ],
             towerResponseSoundFileLocation:
                 "tripAudio/welshpool-newcastle/1.mp3",
-            informationText:
+            startingHintMessage:
                 "You are on the south apron at Welshpool airport and are about to start up, taxi to line up, and depart"),
         RadioTransmission(
             pilotDialogue: [

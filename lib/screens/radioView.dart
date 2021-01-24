@@ -142,7 +142,7 @@ class _RadioViewState extends State<RadioView> {
     //     .addAll(widget.startingAirport.startingAirportConversation);
     // widget.airspaces.forEach((e) => _flightConversation.addAll(e.conversation));
     // _flightConversation.addAll(widget.endingAirport.endingAirportConversation);
-    showHintBubble(_flightConversation[0].informationText);
+    showHintBubble(_flightConversation[0].startingHintMessage);
     Airport airport = Airport(fromIcaoCode: "KJFK");
     atisMetar = MetarService(currentAirport: airport);
     getData();

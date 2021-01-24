@@ -4,20 +4,17 @@ import 'package:flutter/foundation.dart';
 import 'package:string_similarity/string_similarity.dart';
 
 class RadioTransmission {
-  RadioTransmission({
-    @required this.pilotDialogue,
-    @required this.towerResponseSoundFileLocation,
-    this.towerErrorResponseSoundFileLocation,
-    this.errorHintText,
-    this.showFrequencyPicker,
-    this.requiredFrequency,
-    this.requiredWords,
-    this.responseDelay = const Duration(seconds: 4),
-    this.checkForPilotDialogueMatching = true,
-    this.requiredWordsMissingHintText,
-    this.showHintBubbleWIthMessage,
-    this.informationText,
-  });
+  RadioTransmission(
+      {@required this.pilotDialogue,
+      @required this.towerResponseSoundFileLocation,
+      this.towerErrorResponseSoundFileLocation,
+      this.errorHintMessage,
+      this.requiredFrequency,
+      this.requiredWords,
+      this.responseDelay = const Duration(seconds: 4),
+      this.checkForPilotDialogueMatching = true,
+      this.startingHintMessage,
+      this.endingHintMessage});
 
   ///[pilotDialogue] questions can be asked in more than one way so a list is supplied of possible questions. to ensure the system understands what the person is trying to say.
   final List<String> pilotDialogue;
@@ -31,14 +28,14 @@ class RadioTransmission {
   static final String _sayAgainMessageLocation =
       "tripAudio/generic/Say again.mp3";
 
-  ///[informationText] include information for the pilot
-  final String informationText;
+  ///[startingHintMessage] include information for the pilot
+  final String startingHintMessage;
 
-  ///[errorHintText] if you would like hintText to be shown after the answer has been given then include the hint text.
-  final String errorHintText;
+  ///[endingHintMessage] include information for the pilot
+  final String endingHintMessage;
 
-  ///[requiredWordsMissingHintText] if one of the required words are missing use this hint text
-  final String requiredWordsMissingHintText;
+  ///[errorHintMessage] if you would like hintText to be shown after the answer has been given then include the hint text.
+  final String errorHintMessage;
 
   ///[requiredFrequency] if shouldShowFrequencyPicker make sure the frequency matches required Frequency
   final double requiredFrequency;
@@ -51,12 +48,6 @@ class RadioTransmission {
 
   ///[checkForPilotDialogueMatching] default = true; if false any message can be used.
   final bool checkForPilotDialogueMatching;
-
-  ///[showHintBubbleWIthMessage] implement this callback to pass the message to the UI hint bubble
-  final Function(String) showHintBubbleWIthMessage;
-
-  ///[showFrequencyPicker] shows the frequency picker and passes the required frequency to it.
-  final Function(double) showFrequencyPicker;
 
   ///[_player] for playing response audio files.
   final _player = AudioCache();
@@ -73,64 +64,72 @@ class RadioTransmission {
           onUndiscernableSpeech,
       Function(String) showHintBubble,
       Function(double) showFrequencyPicker,
-      Function(bool) onFinished}) async {
-    if (requiredWords != null) {
-      if (!_requiredWordsIncluded(forString: textToSpeechOutput)) {
-        print("not included");
-        print(_requiredWordsIncluded(forString: textToSpeechOutput));
-        if (towerResponseSoundFileLocation != null) {
-          _player.play(towerErrorResponseSoundFileLocation);
-        }
-        _checkForNullHint(
-            callBackFunction: showHintBubble,
-            message: "try saying: ${pilotDialogue[0]}");
-      }
-      _checkForNullFrequency(callBackFunction: showFrequencyPicker);
-    } else {
-      //states what the pilot said is the correct thing,
-      //what the pilot said wasnt the right thing
-      //  was wrong because required words were missing
-      //  was wrong just because the match rating wasn't high enough.
+      Function(bool) onFinished,
+      Function(bool) onRequiredNotFound}) async {
+    //states what the pilot said is the correct thing,
+    //what the pilot said wasnt the right thing
+    //  was wrong because required words were missing
+    //  was wrong just because the match rating wasn't high enough.
+    _checkForNullHint(
+        callBackFunction: showHintBubble, message: startingHintMessage);
 
-      if (checkForPilotDialogueMatching) {
-        double checkResult = 0;
-        pilotDialogue.forEach((element) {
-          if (textToSpeechOutput.similarityTo(element) > checkResult) {
-            checkResult = textToSpeechOutput.similarityTo(element);
-          }
-        });
-        if (checkResult > 0.5) {
-          await Future.delayed(responseDelay);
-          if (towerResponseSoundFileLocation != null) {
-            _player.play(towerResponseSoundFileLocation);
-          }
-          _checkForNullHint(
-              callBackFunction: showHintBubble, message: informationText);
-          onFinished(true);
-        } else {
-          await Future.delayed(responseDelay);
-          _player.play(_sayAgainMessageLocation).whenComplete(() {
-            _checkForNullFrequency(callBackFunction: showFrequencyPicker);
-            _checkForNullHint(
-                callBackFunction: showHintBubble,
-                message: "try saying: ${pilotDialogue[0]}");
-          });
-          onUndiscernableSpeech(textToSpeechOutput, checkResult);
+    if (checkForPilotDialogueMatching) {
+      double checkResult = 0;
+      pilotDialogue.forEach((element) {
+        if (textToSpeechOutput.similarityTo(element) > checkResult) {
+          checkResult = textToSpeechOutput.similarityTo(element);
         }
+      });
+      if (checkResult < 0.5 ||
+          ((requiredWords.isNotEmpty || requiredWords != null) &&
+              (!_requiredWordsIncluded(inString: textToSpeechOutput)))) {
+        print("required words not included:");
+        _playErrorMessage();
+        _showPilotWhatToSay(showHintBubble);
+        onFinished(true);
       } else {
-        _player.play(towerResponseSoundFileLocation).whenComplete(() {
-          _checkForNullFrequency(callBackFunction: showFrequencyPicker);
-          _checkForNullHint(
-              callBackFunction: showHintBubble, message: informationText);
-          onFinished(true);
-        });
+        _playTowerResponseAndShowAppropriateDialogues(
+            hintCallBack: showHintBubble,
+            finishedCompetionHandler: onFinished,
+            showFrequencyPicker: showFrequencyPicker);
       }
     }
   }
 
-  void _checkForNullHint({Function(String) callBackFunction, String message}) {
+  void _playTowerResponseAndShowAppropriateDialogues(
+      {Function(String) hintCallBack,
+      Function(bool) finishedCompetionHandler,
+      Function showFrequencyPicker}) {
+    if (towerResponseSoundFileLocation != null) {
+      _player.play(towerResponseSoundFileLocation);
+    }
+    _checkForNullFrequency(callBackFunction: showFrequencyPicker);
+    _checkForNullHint(
+        callBackFunction: hintCallBack, message: endingHintMessage);
+    finishedCompetionHandler(true);
+  }
+
+  void _playErrorMessage() {
+    if (towerErrorResponseSoundFileLocation != null) {
+      _player.play(towerErrorResponseSoundFileLocation);
+    } else {
+      _player.play(_sayAgainMessageLocation);
+    }
+  }
+
+  void _showPilotWhatToSay(Function(String) showHintCallback) {
+    _checkForNullHint(
+        callBackFunction: showHintCallback,
+        message: "try saying: ${pilotDialogue[0]}");
+    _checkForNullHint(
+        callBackFunction: showHintCallback, message: errorHintMessage);
+  }
+
+  void _checkForNullHint(
+      {Function(String) callBackFunction, String message}) async {
     if (message != null) {
       callBackFunction(message);
+      await Future.delayed(responseDelay);
     }
   }
 
@@ -140,27 +139,26 @@ class RadioTransmission {
     }
   }
 
-  bool _checkRequiredWord(RequiredWord word, String checkInString) {
+  bool _requiredWordIncluded(RequiredWord word, String inString) {
     bool isIncluded = false;
 
     for (var each in word.wordPermutations) {
-      if (checkInString.toLowerCase().contains(each.toLowerCase())) {
+      if (inString.toLowerCase().contains(each.toLowerCase())) {
         return true;
       }
     }
+    print("RequiredWord not found: $word");
     return isIncluded;
   }
 
-  bool _requiredWordsIncluded({String forString}) {
+  bool _requiredWordsIncluded({String inString}) {
     assert(requiredWords != null,
         "Error Tried to check for missing words but requiredWords == null");
     //all required words must be present
     //for each required word there must be at least one required word that is included.
 
     for (var requiredWord in requiredWords) {
-      print(
-          "requiredWord ${requiredWord.wordPermutations[0]} : ${_checkRequiredWord(requiredWord, forString)}");
-      if (!_checkRequiredWord(requiredWord, forString)) {
+      if (!_requiredWordIncluded(requiredWord, inString)) {
         return false;
       }
     }

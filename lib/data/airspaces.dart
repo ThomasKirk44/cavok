@@ -12,7 +12,7 @@ final Map<String, AirSpace> airSpaces = {
       AirSpace(name: "london", radioFrequency: 118.505, conversation: [
     RadioTransmission(
         pilotDialogue: ["Basic service Golf Charlie Delta"],
-        errorHintText:
+        errorHintMessage:
             "You are now leaving Newcastle’s ATZ and need to contact London information 124.750 for a basic service"),
     RadioTransmission(
         requiredFrequency: 124.750,
@@ -41,7 +41,7 @@ final Map<String, AirSpace> airSpaces = {
           "Squawk 1177 with charlie, Golf Alpha Bravo Charlie Delta"
         ],
         responseDelay: Duration(seconds: 5),
-        errorHintText:
+        errorHintMessage:
             "You are now 5 miles from the Shawbury zone military air traffic zone boundary and require a ‘MATZ’ penetration. Change to shawbury zone 133.150"),
     RadioTransmission(requiredWords: [
       RequiredWord(wordPermutations: ["133.150"])
@@ -67,10 +67,10 @@ final Map<String, AirSpace> airSpaces = {
     ], pilotDialogue: [
       "Max penetration approved not below 2000 feet report entering and leaving the zone Golf Charlie Delta",
       "Matz penetration approved not below 2000 feet report entering and leaving the zone Golf Charlie Delta"
-    ], errorHintText: "You are entering Shawbury Zone"),
+    ], errorHintMessage: "You are entering Shawbury Zone"),
     RadioTransmission(
         pilotDialogue: [],
-        errorHintText: "You are leaving Shawbury Zone",
+        errorHintMessage: "You are leaving Shawbury Zone",
         responseDelay: Duration(seconds: 5)),
   ])
 };
