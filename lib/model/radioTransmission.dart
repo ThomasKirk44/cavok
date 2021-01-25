@@ -69,6 +69,10 @@ class RadioTransmission {
     }
   }
 
+  void disposeAudioPlayer() async {
+    await _player.fixedPlayer.dispose();
+  }
+
   void respondToPilotDialogue(
       {String textToSpeechOutput,
       Function(
@@ -80,7 +84,9 @@ class RadioTransmission {
       Function(double) showFrequencyPicker,
       Function(bool) onFinished,
       Function(bool) onRequiredNotFound}) async {
-    _player.fixedPlayer.stop();
+    //if (_player.fixedPlayer.state == AudioPlayerState.PLAYING) {
+
+    print("stopping playerID: ${_player.fixedPlayer.state}");
     _checkForNullHint(
         callBackFunction: showHintBubble, message: initialMessage);
 
@@ -112,6 +118,7 @@ class RadioTransmission {
       Function showFrequencyPicker}) {
     if (towerResponseSoundFileLocation != null) {
       _player.play(towerResponseSoundFileLocation);
+      print("playing playerID: ${_player.fixedPlayer.playerId}");
     }
     _checkForNullFrequency(callBackFunction: showFrequencyPicker);
     _checkForNullHint(
@@ -122,8 +129,12 @@ class RadioTransmission {
   void _playErrorMessage() async {
     if (towerErrorResponseSoundFileLocation != null) {
       _player.play(towerErrorResponseSoundFileLocation);
+      print("playing playerID: ${_player.fixedPlayer.state}");
     } else {
+      _player.fixedPlayer = AudioPlayer();
       _player.play(_sayAgainMessageLocation);
+      _player.play(towerErrorResponseSoundFileLocation);
+      print("playing playerID: ${_player.fixedPlayer.state}");
     }
   }
 

@@ -14,7 +14,7 @@ class PilotMessageBubble extends StatelessWidget {
           decoration: BoxDecoration(
               color: Colors.blueGrey,
               borderRadius: BorderRadius.all(Radius.circular(20))),
-          height: 100,
+          height: 150,
           width: 300,
           child: Padding(
             padding: const EdgeInsets.all(8.0),

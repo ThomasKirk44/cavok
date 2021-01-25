@@ -172,7 +172,7 @@ class _RadioViewState extends State<RadioView> {
     //     .addAll(widget.startingAirport.startingAirportConversation);
     // widget.airspaces.forEach((e) => _flightConversation.addAll(e.conversation));
     // _flightConversation.addAll(widget.endingAirport.endingAirportConversation);
-    showHintBubble(_flightConversation[0].initialMessage);
+    showHintBubble(_flightConversation[_currentMessageIndex].initialMessage);
     Airport airport = Airport(fromIcaoCode: "KJFK");
     atisMetar = MetarService(currentAirport: airport);
     getData();
@@ -189,7 +189,7 @@ class _RadioViewState extends State<RadioView> {
             child: GestureDetector(
               onTap: () {
                 showHintBubble(
-                    _flightConversation[_currentMessageIndex].initialMessage);
+                    "Say: ${_flightConversation[_currentMessageIndex].pilotDialogue[0] ?? "No hint available"}");
               },
               child: Column(
                 children: [
@@ -216,6 +216,7 @@ class _RadioViewState extends State<RadioView> {
         child: FloatingActionButton(
           backgroundColor: _isListening ? Colors.red : Colors.green,
           onPressed: () async {
+            _flightConversation[_currentMessageIndex].disposeAudioPlayer();
             print("current index: $_currentMessageIndex");
             _listen(onFinished: (result) {
               print(result);
@@ -279,9 +280,9 @@ class _RadioViewState extends State<RadioView> {
                           highlightWords: _highlights,
                         ),
                         SizedBox(
-                          height: 300,
+                          height: 350,
                         ),
-
+                        //
                         // TextHighlight(
                         //   text: _text,
                         //   words: _highlights,
