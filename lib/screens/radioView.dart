@@ -1,14 +1,11 @@
-import 'package:audioplayer/audioplayer.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:cavok/data/airports.dart';
 import 'package:cavok/data/airspaces.dart';
 import 'package:cavok/model/airport.dart';
 import 'package:cavok/model/airspace.dart';
 import 'package:cavok/model/radioController.dart';
 import 'package:cavok/model/radioTransmission.dart';
 import 'package:cavok/services/metarService.dart';
-import 'package:cavok/widgets/controllerMessageBubble.dart';
 import 'package:cavok/widgets/frequencyPicker.dart';
 import 'package:cavok/widgets/hintBubble.dart';
 import 'package:cavok/widgets/pilotMessageBubble.dart';
@@ -16,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:highlight_text/highlight_text.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+
+//todo add hint text at the beginning of each message.
 
 class RadioView extends StatefulWidget {
   Airport startingAirport;
@@ -60,7 +59,6 @@ class _RadioViewState extends State<RadioView> {
   MetarService atisMetar;
   FlutterTts flutterTts = FlutterTts();
   RadioController airTrafficControl = RadioController();
-  AudioPlayer audioPlugin;
   stt.SpeechToText _speech;
   bool _isListening = false;
   bool _hintBubbleVisible = false;
@@ -165,9 +163,10 @@ class _RadioViewState extends State<RadioView> {
   void initState() {
     super.initState();
 //todo remove this code in production this is just for testing purposes
-    _flightConversation.addAll(airports["EGNT"].startingAirportConversation);
-    airSpaces.forEach((e, j) => _flightConversation.addAll(j.conversation));
-    _flightConversation.addAll(airports["EGCW"].endingAirportConversation);
+    _flightConversation
+        .addAll(widget.startingAirport.startingAirportConversation);
+    airSpaces.forEach((e, j) => widget.airspaces);
+    _flightConversation.addAll(widget.endingAirport.endingAirportConversation);
 
     // _flightConversation
     //     .addAll(widget.startingAirport.startingAirportConversation);
@@ -178,13 +177,32 @@ class _RadioViewState extends State<RadioView> {
     atisMetar = MetarService(currentAirport: airport);
     getData();
     _speech = stt.SpeechToText();
-    audioPlugin = AudioPlayer();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 10, 20, 5),
+            child: GestureDetector(
+              onTap: () {
+                showHintBubble(
+                    _flightConversation[_currentMessageIndex].initialMessage);
+              },
+              child: Column(
+                children: [
+                  Icon(Icons.lightbulb_outline),
+                  Text(
+                    "Hint",
+                    style: TextStyle(fontSize: 10),
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
         title: Text('Confidence: ${(_confidence * 100.0).toStringAsFixed(1)}%'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -247,11 +265,12 @@ class _RadioViewState extends State<RadioView> {
                   children: [
                     Column(
                       children: [
-                        ControllerMessageBubble(
-                          highlightWords: _highlights,
-                          message:
-                              "Some Air-traffic Control message will be displayed here",
-                        ),
+                        //this is hidden for now, the text for each recording would need to be added in inorder to make it show up.
+                        // ControllerMessageBubble(
+                        //   highlightWords: _highlights,
+                        //   message:
+                        //       "Some Air-traffic Control message will be displayed here",
+                        // ),
                         SizedBox(
                           height: 20,
                         ),

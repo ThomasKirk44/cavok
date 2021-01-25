@@ -1,4 +1,5 @@
 import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cavok/model/requiredWord.dart';
 import 'package:flutter/foundation.dart';
 import 'package:string_similarity/string_similarity.dart';
@@ -50,7 +51,7 @@ class RadioTransmission {
   final bool checkForPilotDialogueMatching;
 
   ///[_player] for playing response audio files.
-  final _player = AudioCache();
+  final _player = AudioCache(fixedPlayer: AudioPlayer());
 
   /// responds appropriately to the [textToSpeechOutput] give from text to speech
   /// [onUndiscernableSpeech] is a callback that gives you the text that Failed
@@ -75,6 +76,7 @@ class RadioTransmission {
       Function(double) showFrequencyPicker,
       Function(bool) onFinished,
       Function(bool) onRequiredNotFound}) async {
+    _player.fixedPlayer.stop();
     _checkForNullHint(
         callBackFunction: showHintBubble, message: initialMessage);
 
@@ -88,7 +90,6 @@ class RadioTransmission {
       if (checkResult < 0.5 ||
           ((requiredWords != null) &&
               (!_requiredWordsIncluded(inString: textToSpeechOutput)))) {
-        print("required words not included:");
         _playErrorMessage();
         _showPilotWhatToSay(showHintBubble);
         onFinished(false);
@@ -114,7 +115,7 @@ class RadioTransmission {
     finishedCompetionHandler(true);
   }
 
-  void _playErrorMessage() {
+  void _playErrorMessage() async {
     if (towerErrorResponseSoundFileLocation != null) {
       _player.play(towerErrorResponseSoundFileLocation);
     } else {
@@ -152,7 +153,7 @@ class RadioTransmission {
         return true;
       }
     }
-    print("RequiredWord not found: $word");
+    print("RequiredWord not found: ${word.wordPermutations[0]}");
     return isIncluded;
   }
 

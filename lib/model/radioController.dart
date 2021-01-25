@@ -1,4 +1,3 @@
-import 'package:audioplayer/audioplayer.dart';
 import 'package:cavok/model/airport.dart';
 import 'package:cavok/model/radioTransmission.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -8,7 +7,6 @@ class RadioController {
 
   Airport currentAirport;
   FlutterTts _flutterTts = FlutterTts();
-  AudioPlayer audioPlugin = AudioPlayer();
   List<String> randomAtisConditions = [
     """Stansted information Hotel, time 2150.
 Runway in use: two-two. Expect an ILS approach
