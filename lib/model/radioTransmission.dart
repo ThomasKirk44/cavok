@@ -51,7 +51,7 @@ class RadioTransmission {
   final bool checkForPilotDialogueMatching;
 
   ///[_player] for playing response audio files.
-  final _player = AudioCache(fixedPlayer: AudioPlayer());
+  static final _player = AudioCache(fixedPlayer: AudioPlayer());
 
   /// responds appropriately to the [textToSpeechOutput] give from text to speech
   /// [onUndiscernableSpeech] is a callback that gives you the text that Failed
@@ -61,7 +61,11 @@ class RadioTransmission {
     if (startingHintMessage != null) {
       return startingHintMessage;
     } else {
-      return "Try Saying: ${pilotDialogue[0]}";
+      if (checkForPilotDialogueMatching) {
+        return "Try Saying: ${pilotDialogue[0]}";
+      } else {
+        return "Try Saying Anything";
+      }
     }
   }
 

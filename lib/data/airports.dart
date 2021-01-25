@@ -77,6 +77,7 @@ final Map<String, Airport> airports = {
             "tine bridges",
             "tine bridge"
           ]),
+          RequiredWord(wordPermutations: ["2500"]),
           RequiredWord(wordPermutations: ["6522"]),
           RequiredWord(wordPermutations: ["1013"])
         ],

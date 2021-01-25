@@ -27,7 +27,6 @@ final Map<String, AirSpace> airSpaces = {
       " London Information Golf Alpha Bravo Charlie Delta Request basic service"
     ], towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/11.mp3"),
     RadioTransmission(
-        pilotDialogue: [],
         towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/11.mp3",
         checkForPilotDialogueMatching: false)
   ]),
