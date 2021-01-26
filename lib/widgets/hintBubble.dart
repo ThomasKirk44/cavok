@@ -4,9 +4,11 @@ class HintBubble extends StatefulWidget {
   HintBubble(
       {@required this.hintText,
       this.onVisibilityChanged,
-      this.delayInSeconds}) {
+      this.delayInSeconds,
+      this.bubbleWidth}) {
     assert(hintText != null, "hintText != null was true!");
   }
+  double bubbleWidth;
   int delayInSeconds;
   String hintText;
   Function(bool) onVisibilityChanged;
@@ -65,18 +67,20 @@ class _HintBubbleState extends State<HintBubble> with TickerProviderStateMixin {
         curve: Curves.fastLinearToSlowEaseIn,
       )),
       child: Container(
+        width: widget.bubbleWidth,
         decoration: BoxDecoration(
             color: _colorAnimationBox.value,
             borderRadius: BorderRadius.all(Radius.circular(20))),
-        height: 100,
-        width: 300,
         child: Center(
-          child: Text(
-            widget.hintText,
-            softWrap: true,
-            maxLines: 100,
-            style: TextStyle(
-              color: _colorAnimationText.value,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              widget.hintText,
+              maxLines: 20,
+              style: TextStyle(
+                fontSize: 14,
+                color: _colorAnimationText.value,
+              ),
             ),
           ),
         ),

@@ -253,66 +253,40 @@ class _RadioViewState extends State<RadioView> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        reverse: true,
-        child: Stack(
-          children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 30.0),
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          _hintBubbleVisible
+              ? Positioned(
+                  bottom: 170,
+                  child: HintBubble(
+                    bubbleWidth: MediaQuery.of(context).size.width * 0.9,
+                    delayInSeconds: 4,
+                    hintText: _hintText,
+                    onVisibilityChanged: (bool) {
+                      if (bool == false) {
+                        setState(() {
+                          _hintBubbleVisible = bool;
+                        });
+                      }
+                    },
+                  ),
+                )
+              : Container(),
+          Positioned(
+            top: 40,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      children: [
-                        //this is hidden for now, the text for each recording would need to be added in inorder to make it show up.
-                        // ControllerMessageBubble(
-                        //   highlightWords: _highlights,
-                        //   message:
-                        //       "Some Air-traffic Control message will be displayed here",
-                        // ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        PilotMessageBubble(
-                          message: _text,
-                          highlightWords: _highlights,
-                        ),
-                        SizedBox(
-                          height: 350,
-                        ),
-                        //
-                        // TextHighlight(
-                        //   text: _text,
-                        //   words: _highlights,
-                        //   textStyle: const TextStyle(
-                        //     fontSize: 32.0,
-                        //     color: Colors.black,
-                        //     fontWeight: FontWeight.w400,
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                    _hintBubbleVisible
-                        ? HintBubble(
-                            delayInSeconds: 4,
-                            hintText: _hintText,
-                            onVisibilityChanged: (bool) {
-                              if (bool == false) {
-                                setState(() {
-                                  _hintBubbleVisible = bool;
-                                });
-                              }
-                            },
-                          )
-                        : Container()
-                  ],
+                child: PilotMessageBubble(
+                  message: _text,
+                  highlightWords: _highlights,
+                  bubbleWidth: MediaQuery.of(context).size.width * 0.8,
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
