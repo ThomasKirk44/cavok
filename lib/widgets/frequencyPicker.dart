@@ -28,16 +28,20 @@ class _FrequencyPickerState extends State<FrequencyPicker> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    widget.initialValue = "123.456";
     print(widget.initialValue.length);
     print(widget.initialValue);
-    _v1 = int.parse(widget.initialValue[0]);
-    _v2 = int.parse(widget.initialValue[1]);
-    _v3 = int.parse(widget.initialValue[2]);
-    _v4 = int.parse(widget.initialValue[4]);
-    _v5 = int.parse(widget.initialValue[5]);
-    _v6 = int.parse(widget.initialValue[6]);
+    _v1 =
+        widget.initialValue.length >= 1 ? int.parse(widget.initialValue[0]) : 0;
+    _v2 =
+        widget.initialValue.length >= 2 ? int.parse(widget.initialValue[1]) : 0;
+    _v3 =
+        widget.initialValue.length >= 3 ? int.parse(widget.initialValue[2]) : 0;
+    _v4 =
+        widget.initialValue.length >= 5 ? int.parse(widget.initialValue[4]) : 0;
+    _v5 =
+        widget.initialValue.length >= 6 ? int.parse(widget.initialValue[5]) : 0;
+    _v6 =
+        widget.initialValue.length >= 7 ? int.parse(widget.initialValue[6]) : 0;
   }
 
   @override
