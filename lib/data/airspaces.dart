@@ -27,8 +27,8 @@ final Map<String, AirSpace> airSpaces = {
       " London Information Golf Alpha Bravo Charlie Delta Request basic service"
     ], towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/11.mp3"),
     RadioTransmission(
-        towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/11.mp3",
-        checkForPilotDialogueMatching: false)
+      towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/11.mp3",
+    )
   ]),
   AirSpaceNames.shawbury:
       AirSpace(name: "shawbury", radioFrequency: 133.15, conversation: [
@@ -57,9 +57,9 @@ final Map<String, AirSpace> airSpaces = {
       "Shawbury zone GABCD request basic service and max penetration"
     ], towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/13.mp3"),
     RadioTransmission(
-        pilotDialogue: [],
-        towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/14.mp3",
-        checkForPilotDialogueMatching: false),
+      pilotDialogue: [],
+      towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/14.mp3",
+    ),
     RadioTransmission(requiredWords: [
       RequiredWord(
           wordPermutations: ["not below 2000", "not below two thousand"])

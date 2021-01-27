@@ -132,7 +132,6 @@ final Map<String, Airport> airports = {
           towerResponseSoundFileLocation:
               "tripAudio/newcastle-welshpool/11.mp3"),
       RadioTransmission(
-          checkForPilotDialogueMatching: false,
           towerResponseSoundFileLocation:
               "tripAudio/newcastle-welshpool/12.mp3"),
       RadioTransmission(

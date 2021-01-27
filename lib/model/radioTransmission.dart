@@ -13,7 +13,6 @@ class RadioTransmission {
       this.requiredFrequency,
       this.requiredWords,
       this.responseDelay = const Duration(seconds: 4),
-      this.checkForPilotDialogueMatching = true,
       this.startingHintMessage,
       this.endingHintMessage});
 
@@ -48,7 +47,12 @@ class RadioTransmission {
   final Duration responseDelay;
 
   ///[checkForPilotDialogueMatching] default = true; if false any message can be used.
-  final bool checkForPilotDialogueMatching;
+  bool get checkForPilotDialogueMatching {
+    return _checkForPilotDialogueMatching;
+  }
+
+  /// [_checkForPilotDialogueMatching] this is used for change the value checkForPilotDialogueMatching.
+  bool _checkForPilotDialogueMatching = true;
 
   ///[_player] for playing response audio files.
   static final _player = AudioCache(fixedPlayer: AudioPlayer());
@@ -84,6 +88,9 @@ class RadioTransmission {
       Function(double) showFrequencyPicker,
       Function(bool) onFinished,
       Function(bool) onRequiredNotFound}) async {
+    if (pilotDialogue == null) {
+      _checkForPilotDialogueMatching = false;
+    }
     //if (_player.fixedPlayer.state == AudioPlayerState.PLAYING) {
 
     print("stopping playerID: ${_player.fixedPlayer.state}");
@@ -109,6 +116,12 @@ class RadioTransmission {
             finishedCompetionHandler: onFinished,
             showFrequencyPicker: showFrequencyPicker);
       }
+    } else {
+      //this is the case that it doesn't matter what the pilot says it is just supposed to play the message
+      _playTowerResponseAndShowAppropriateDialogues(
+          hintCallBack: showHintBubble,
+          finishedCompetionHandler: onFinished,
+          showFrequencyPicker: showFrequencyPicker);
     }
   }
 
