@@ -27,8 +27,8 @@ final Map<String, AirSpace> airSpaces = {
       " London Information Golf Alpha Bravo Charlie Delta Request basic service"
     ], towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/11.mp3"),
     RadioTransmission(
-        towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/11.mp3",
-        checkForPilotDialogueMatching: false)
+      towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/11.mp3",
+    )
   ]),
   AirSpaceNames.shawbury:
       AirSpace(name: "shawbury", radioFrequency: 133.15, conversation: [
@@ -57,9 +57,8 @@ final Map<String, AirSpace> airSpaces = {
       "Shawbury zone GABCD request basic service and max penetration"
     ], towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/13.mp3"),
     RadioTransmission(
-        pilotDialogue: [],
-        towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/14.mp3",
-        checkForPilotDialogueMatching: false),
+      towerResponseSoundFileLocation: "tripAudio/newcastle-welshpool/14.mp3",
+    ),
     RadioTransmission(requiredWords: [
       RequiredWord(
           wordPermutations: ["not below 2000", "not below two thousand"])
@@ -68,7 +67,6 @@ final Map<String, AirSpace> airSpaces = {
       "Matz penetration approved not below 2000 feet report entering and leaving the zone Golf Charlie Delta"
     ], errorHintMessage: "You are entering Shawbury Zone"),
     RadioTransmission(
-        pilotDialogue: [],
         errorHintMessage: "You are leaving Shawbury Zone",
         responseDelay: Duration(seconds: 5)),
   ])

@@ -4,21 +4,29 @@ import 'package:cavok/model/requiredWord.dart';
 import 'package:flutter/foundation.dart';
 import 'package:string_similarity/string_similarity.dart';
 
+/// This function is used to check if a list is null or empty.. this was a painful solution, cant believe there isnt something better to do this.. also used in RadioView
+T exceptionAware<T>(T Function() f) {
+  try {
+    return f();
+  } catch (_) {
+    return null;
+  }
+}
+
 class RadioTransmission {
-  RadioTransmission(
-      {@required this.pilotDialogue,
-      @required this.towerResponseSoundFileLocation,
-      this.towerErrorResponseSoundFileLocation,
-      this.errorHintMessage,
-      this.requiredFrequency,
-      this.requiredWords,
-      this.responseDelay = const Duration(seconds: 4),
-      this.checkForPilotDialogueMatching = true,
-      this.startingHintMessage,
-      this.endingHintMessage});
+  RadioTransmission({
+    @required this.pilotDialogue,
+    @required this.towerResponseSoundFileLocation,
+    this.towerErrorResponseSoundFileLocation,
+    this.errorHintMessage,
+    this.requiredFrequency,
+    this.requiredWords,
+    this.responseDelay = const Duration(seconds: 4),
+    this.hintMessage,
+  });
 
   ///[pilotDialogue] questions can be asked in more than one way so a list is supplied of possible questions. to ensure the system understands what the person is trying to say.
-  final List<String> pilotDialogue;
+  List<String> pilotDialogue;
 
   ///[towerResponseSoundFileLocation] the location of the answer mp3 file to be played in response to the question. ex.. "tripAudio/newcastle-welshpool/3.mp3" the text should not include the assets folder.
   final String towerResponseSoundFileLocation;
@@ -29,11 +37,8 @@ class RadioTransmission {
   static final String _sayAgainMessageLocation =
       "tripAudio/generic/Say again.mp3";
 
-  ///[startingHintMessage] include information for the pilot
-  final String startingHintMessage;
-
-  ///[endingHintMessage] include information for the pilot
-  final String endingHintMessage;
+  ///[hintMessage] include information for the pilot
+  final String hintMessage;
 
   ///[errorHintMessage] if you would like hintText to be shown after the answer has been given then include the hint text.
   final String errorHintMessage;
@@ -48,7 +53,12 @@ class RadioTransmission {
   final Duration responseDelay;
 
   ///[checkForPilotDialogueMatching] default = true; if false any message can be used.
-  final bool checkForPilotDialogueMatching;
+  bool get checkForPilotDialogueMatching {
+    return _checkForPilotDialogueMatching;
+  }
+
+  /// [_checkForPilotDialogueMatching] this is used for change the value checkForPilotDialogueMatching.
+  bool _checkForPilotDialogueMatching = true;
 
   ///[_player] for playing response audio files.
   static final _player = AudioCache(fixedPlayer: AudioPlayer());
@@ -58,16 +68,31 @@ class RadioTransmission {
   /// [onFinished] is a callback that notifies the view when the next transmission should be played
 
   String get initialMessage {
-    if (startingHintMessage != null) {
-      return startingHintMessage;
+    if (exceptionAware(() => pilotDialogue[0]) == null) {
+      _checkForPilotDialogueMatching = false;
+      print("it worked yaaaaaa");
+    }
+    if (hintMessage != null) {
+      return hintMessage;
     } else {
       if (checkForPilotDialogueMatching) {
-        return "Try Saying: ${pilotDialogue[0]}";
+        return pilotDialogue[0];
       } else {
         return "Try Saying Anything";
       }
     }
   }
+
+  T firstOrNull<T>(List<T> list) {
+    if (list.isEmpty) {
+      return null;
+    } else {
+      return list.first;
+    }
+  }
+
+  ///this function just makes sure that the frequency has 7 digits if it doesnt it inserts zeros to fill it in. ex 124 == 124.000, 123.44 == 123.440
+  void frequencyValidator() {}
 
   void disposeAudioPlayer() async {
     await _player.fixedPlayer.dispose();
@@ -80,15 +105,13 @@ class RadioTransmission {
         double clarity,
       )
           onUndiscernableSpeech,
-      Function(String) showHintBubble,
+      Function(String) showErrorHintBubble,
       Function(double) showFrequencyPicker,
       Function(bool) onFinished,
       Function(bool) onRequiredNotFound}) async {
-    //if (_player.fixedPlayer.state == AudioPlayerState.PLAYING) {
-
-    print("stopping playerID: ${_player.fixedPlayer.state}");
-    _checkForNullHint(
-        callBackFunction: showHintBubble, message: initialMessage);
+    if (pilotDialogue == null) {
+      _checkForPilotDialogueMatching = false;
+    }
 
     if (checkForPilotDialogueMatching) {
       double checkResult = 0;
@@ -101,49 +124,53 @@ class RadioTransmission {
           ((requiredWords != null) &&
               (!_requiredWordsIncluded(inString: textToSpeechOutput)))) {
         _playErrorMessage();
-        _showPilotWhatToSay(showHintBubble);
+        _showPilotWhatToSay(showErrorHintBubble);
         onFinished(false);
       } else {
-        _playTowerResponseAndShowAppropriateDialogues(
-            hintCallBack: showHintBubble,
+        _playTowerResponseAndShowPicker(
+            hintCallBack: showErrorHintBubble,
             finishedCompetionHandler: onFinished,
             showFrequencyPicker: showFrequencyPicker);
       }
+    } else {
+      //this is the case that it doesn't matter what the pilot says it is just supposed to play the message
+      _playTowerResponseAndShowPicker(
+          hintCallBack: showErrorHintBubble,
+          finishedCompetionHandler: onFinished,
+          showFrequencyPicker: showFrequencyPicker);
     }
   }
 
-  void _playTowerResponseAndShowAppropriateDialogues(
+  void _playTowerResponseAndShowPicker(
       {Function(String) hintCallBack,
       Function(bool) finishedCompetionHandler,
       Function showFrequencyPicker}) {
+    _player.fixedPlayer = AudioPlayer();
     if (towerResponseSoundFileLocation != null) {
       _player.play(towerResponseSoundFileLocation);
-      print("playing playerID: ${_player.fixedPlayer.playerId}");
     }
     _checkForNullFrequency(callBackFunction: showFrequencyPicker);
-    _checkForNullHint(
-        callBackFunction: hintCallBack, message: endingHintMessage);
     finishedCompetionHandler(true);
   }
 
   void _playErrorMessage() async {
+    _player.fixedPlayer = AudioPlayer();
     if (towerErrorResponseSoundFileLocation != null) {
       _player.play(towerErrorResponseSoundFileLocation);
-      print("playing playerID: ${_player.fixedPlayer.state}");
     } else {
-      _player.fixedPlayer = AudioPlayer();
       _player.play(_sayAgainMessageLocation);
-      _player.play(towerErrorResponseSoundFileLocation);
-      print("playing playerID: ${_player.fixedPlayer.state}");
     }
   }
 
   void _showPilotWhatToSay(Function(String) showHintCallback) {
-    _checkForNullHint(
-        callBackFunction: showHintCallback,
-        message: "try saying: ${pilotDialogue[0]}");
-    _checkForNullHint(
-        callBackFunction: showHintCallback, message: errorHintMessage);
+    if (errorHintMessage == null) {
+      _checkForNullHint(
+          callBackFunction: showHintCallback,
+          message: "try saying: ${pilotDialogue[0]}");
+    } else {
+      _checkForNullHint(
+          callBackFunction: showHintCallback, message: errorHintMessage);
+    }
   }
 
   void _checkForNullHint(

@@ -115,7 +115,6 @@ class _RadioViewState extends State<RadioView> {
               onChanged: (value) {
                 _currentFrequency = value;
                 print(_currentFrequency);
-                print(frequency == double.parse(_currentFrequency));
               },
             ),
             FlatButton(
@@ -150,7 +149,7 @@ class _RadioViewState extends State<RadioView> {
       } else {
         Navigator.of(context).pop();
         showHintBubble(
-            "You are on the right frequency. ${_flightConversation[_currentMessageIndex].initialMessage}");
+            "You are on the right frequency. Hint: ${_flightConversation[_currentMessageIndex].initialMessage}");
       }
     });
   }
@@ -163,15 +162,12 @@ class _RadioViewState extends State<RadioView> {
   void initState() {
     super.initState();
 //todo remove this code in production this is just for testing purposes
-    _flightConversation
-        .addAll(widget.startingAirport.startingAirportConversation);
-    airSpaces.forEach((e, j) => widget.airspaces);
+    _flightConversation =
+        List.from(widget.startingAirport.startingAirportConversation);
+    airSpaces.forEach((e, j) {
+      _flightConversation.addAll(j.conversation);
+    });
     _flightConversation.addAll(widget.endingAirport.endingAirportConversation);
-
-    // _flightConversation
-    //     .addAll(widget.startingAirport.startingAirportConversation);
-    // widget.airspaces.forEach((e) => _flightConversation.addAll(e.conversation));
-    // _flightConversation.addAll(widget.endingAirport.endingAirportConversation);
     showHintBubble(_flightConversation[_currentMessageIndex].initialMessage);
     Airport airport = Airport(fromIcaoCode: "KJFK");
     atisMetar = MetarService(currentAirport: airport);
@@ -188,8 +184,15 @@ class _RadioViewState extends State<RadioView> {
             padding: const EdgeInsets.fromLTRB(0, 10, 20, 5),
             child: GestureDetector(
               onTap: () {
-                showHintBubble(
-                    "Say: ${_flightConversation[_currentMessageIndex].pilotDialogue[0] ?? "No hint available"}");
+                if (exceptionAware(() =>
+                        _flightConversation[_currentMessageIndex]
+                            .pilotDialogue[0]) !=
+                    null) {
+                  showHintBubble(
+                      "Say: ${_flightConversation[_currentMessageIndex].pilotDialogue[0] ?? "No hint available"}");
+                } else {
+                  showHintBubble("Try saying anything");
+                }
               },
               child: Column(
                 children: [
@@ -220,29 +223,43 @@ class _RadioViewState extends State<RadioView> {
             print("current index: $_currentMessageIndex");
             _listen(onFinished: (result) {
               print(result);
-              _flightConversation[_currentMessageIndex].respondToPilotDialogue(
-                  textToSpeechOutput: result,
-                  onUndiscernableSpeech: (failedText, clarity) {
-                    print(result);
-                  },
-                  showFrequencyPicker: (frenq) {
-                    _recursiveFrequencyPicker(frenq, true);
-                  },
-                  showHintBubble: (message) {
-                    showHintBubble(message);
-                  },
-                  onFinished: (bool) {
-                    if (bool) {
-                      if (_flightConversation.length - 1 !=
-                          _currentMessageIndex) {
-                        setState(() {
-                          _currentMessageIndex += 1;
+              if (!_isListening) {
+                _flightConversation[_currentMessageIndex]
+                    .respondToPilotDialogue(
+                        textToSpeechOutput: result,
+                        onUndiscernableSpeech: (failedText, clarity) {
+                          print(result);
+                        },
+                        showFrequencyPicker: (frenq) {
+                          _recursiveFrequencyPicker(frenq, true);
+                        },
+                        showErrorHintBubble: (message) {
+                          showHintBubble(message);
+                        },
+                        onFinished: (bool) {
+                          if (bool) {
+                            if (_flightConversation.length - 1 !=
+                                _currentMessageIndex) {
+                              setState(() {
+                                _currentMessageIndex += 1;
+                              });
+                              if (_flightConversation[_currentMessageIndex]
+                                      .pilotDialogue[0] !=
+                                  null) {
+                                print("message");
+                                print(bool);
+                                Future.delayed(Duration(seconds: 2))
+                                    .whenComplete(() {
+                                  showHintBubble(
+                                      "Say: ${_flightConversation[_currentMessageIndex].initialMessage ?? "No hint available"}");
+                                });
+                              }
+                            } else {
+                              showHintBubble("Your flight is complete.");
+                            }
+                          }
                         });
-                      } else {
-                        showHintBubble("Your flight is complete.");
-                      }
-                    }
-                  });
+              }
             });
             // await airTrafficControl.speakPhonetic(forWord: atisData);
 
