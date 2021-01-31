@@ -34,7 +34,7 @@ class PilotMessageBubble extends StatelessWidget {
           width: 5,
         ),
         CircleAvatar(
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.grey.shade400,
           child: Icon(
             Icons.airplanemode_active_outlined,
             size: 15,

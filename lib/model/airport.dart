@@ -37,7 +37,8 @@ class Airport {
       @required double towerFrequency,
       @required List<RadioTransmission> startingAirportConversation,
       @required List<RadioTransmission> endingAirportConversation,
-      @required List<String> availableAirspaces}) {
+      @required List<String> availableAirspaces,
+      this.atisAudioFile}) {
     var json = airportData;
     assert(json.isNotEmpty,
         "check the main.dart file, airport data doesn't seem to have loaded successfully for the airports");

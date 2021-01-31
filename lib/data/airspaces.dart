@@ -66,8 +66,5 @@ final Map<String, AirSpace> airSpaces = {
       "Max penetration approved not below 2000 feet report entering and leaving the zone Golf Charlie Delta",
       "Matz penetration approved not below 2000 feet report entering and leaving the zone Golf Charlie Delta"
     ], errorHintMessage: "You are entering Shawbury Zone"),
-    RadioTransmission(
-        errorHintMessage: "You are leaving Shawbury Zone",
-        responseDelay: Duration(seconds: 5)),
   ])
 };

@@ -1,4 +1,5 @@
 import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cavok/data/airspaces.dart';
 import 'package:cavok/model/airport.dart';
@@ -12,6 +13,7 @@ import 'package:cavok/widgets/pilotMessageBubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:highlight_text/highlight_text.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 //todo add hint text at the beginning of each message.
@@ -67,9 +69,108 @@ class _RadioViewState extends State<RadioView> {
   double _confidence = 1.0;
   String _currentFrequency = "000.00";
   String atisData;
-  int _currentMessageIndex = 0;
   RadioTransmission _currentTransmission;
   final player = AudioCache();
+  List<int> _airSpaceConvoLengths = [];
+  List<String> _atisMessageLocations = [];
+
+  ///index for keeping track of when the next atisMessage should be shown.
+  int _currentAtisConversationLengthIndex = 0;
+
+  /// for keeping track of which radio transmission we are currently on.
+  int _currentMessageIndex = 0;
+
+  /// for keeping track of which atis message we are currently are on.
+  int _currentAtisMessageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+//todo remove this code in production this is just for testing purposes
+    _loadConversation();
+    showHintBubble(_flightConversation[_currentMessageIndex].initialMessage);
+    Airport airport = Airport(fromIcaoCode: "KJFK");
+    atisMetar = MetarService(currentAirport: airport);
+    getData();
+    _speech = stt.SpeechToText();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    player.fixedPlayer.dispose();
+  }
+
+  void disposeAndRebuildPlayer() {
+    _flightConversation[_currentMessageIndex].disposeAudioPlayer();
+    if (player.fixedPlayer != null) {
+      player.fixedPlayer.dispose();
+    } else {
+      player.fixedPlayer = AudioPlayer();
+    }
+  }
+
+  void _loadConversation() {
+    //load atisMessage Locations
+    _atisMessageLocations.add(widget.startingAirport.atisAudioFile ?? "");
+    widget.airspaces.forEach((element) {
+      _atisMessageLocations.add(element.atisMessageLocation ?? "");
+    });
+    _atisMessageLocations.add(widget.endingAirport.atisAudioFile ?? "");
+    print("atisFileLocations: ${_atisMessageLocations}");
+
+    int atisIndex = 0;
+    //load conversation lengths, this will help later keep track of which atis message we are supposed to be on.
+    _airSpaceConvoLengths
+        .add(widget.startingAirport.startingAirportConversation.length);
+    widget.airspaces.forEach((e) {
+      _airSpaceConvoLengths
+          .add(e.conversation.length + _airSpaceConvoLengths[atisIndex]);
+      atisIndex += 1;
+    });
+    _airSpaceConvoLengths.add(
+        widget.endingAirport.endingAirportConversation.length +
+            _airSpaceConvoLengths[atisIndex]);
+    print("calculated Lengths: $_airSpaceConvoLengths");
+
+    //load conversations
+    print(
+        "actual lengths: ${widget.startingAirport.startingAirportConversation.length}");
+    widget.airspaces.forEach((element) {
+      print(element.conversation.length);
+    });
+    print(widget.endingAirport.endingAirportConversation.length);
+
+    _flightConversation =
+        List.from(widget.startingAirport.startingAirportConversation);
+    airSpaces.forEach((e, j) {
+      _flightConversation.addAll(j.conversation);
+    });
+    _flightConversation.addAll(widget.endingAirport.endingAirportConversation);
+  }
+
+  void _updateMessageIndex() {
+    if ((_flightConversation.length - 1) > _currentMessageIndex) {
+      if ((_airSpaceConvoLengths[_currentAtisConversationLengthIndex] - 1) ==
+          _currentMessageIndex) {
+        _currentAtisConversationLengthIndex += 1;
+        _currentAtisMessageIndex += 1;
+      }
+      _currentMessageIndex += 1;
+    } else {
+      _showCompletedDialogue();
+    }
+  }
+
+  void _giveUserHint() {
+    if (_flightConversation[_currentMessageIndex].pilotDialogue[0] != null) {
+      Future.delayed(Duration(seconds: 2)).whenComplete(() {
+        showHintBubble(
+            "Say: ${_flightConversation[_currentMessageIndex].initialMessage ?? "No hint available"}");
+      });
+    }
+  }
 
   void showHintBubble(String withText) {
     print(withText);
@@ -159,26 +260,26 @@ class _RadioViewState extends State<RadioView> {
   }
 
   @override
-  void initState() {
-    super.initState();
-//todo remove this code in production this is just for testing purposes
-    _flightConversation =
-        List.from(widget.startingAirport.startingAirportConversation);
-    airSpaces.forEach((e, j) {
-      _flightConversation.addAll(j.conversation);
-    });
-    _flightConversation.addAll(widget.endingAirport.endingAirportConversation);
-    showHintBubble(_flightConversation[_currentMessageIndex].initialMessage);
-    Airport airport = Airport(fromIcaoCode: "KJFK");
-    atisMetar = MetarService(currentAirport: airport);
-    getData();
-    _speech = stt.SpeechToText();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.airplanemode_active_rounded),
+              onPressed: () {
+                disposeAndRebuildPlayer();
+                if (_atisMessageLocations[_currentAtisMessageIndex] != "") {
+                  player.play(_atisMessageLocations[_currentAtisMessageIndex]);
+                } else {
+                  showHintBubble(
+                      "There is no available Atis/Metar in this airspace");
+                }
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          },
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 10, 20, 5),
@@ -219,47 +320,26 @@ class _RadioViewState extends State<RadioView> {
         child: FloatingActionButton(
           backgroundColor: _isListening ? Colors.red : Colors.green,
           onPressed: () async {
-            _flightConversation[_currentMessageIndex].disposeAudioPlayer();
             print("current index: $_currentMessageIndex");
             _listen(onFinished: (result) {
               print(result);
-              if (!_isListening) {
-                _flightConversation[_currentMessageIndex]
-                    .respondToPilotDialogue(
-                        textToSpeechOutput: result,
-                        onUndiscernableSpeech: (failedText, clarity) {
-                          print(result);
-                        },
-                        showFrequencyPicker: (frenq) {
-                          _recursiveFrequencyPicker(frenq, true);
-                        },
-                        showErrorHintBubble: (message) {
-                          showHintBubble(message);
-                        },
-                        onFinished: (bool) {
-                          if (bool) {
-                            if (_flightConversation.length - 1 !=
-                                _currentMessageIndex) {
-                              setState(() {
-                                _currentMessageIndex += 1;
-                              });
-                              if (_flightConversation[_currentMessageIndex]
-                                      .pilotDialogue[0] !=
-                                  null) {
-                                print("message");
-                                print(bool);
-                                Future.delayed(Duration(seconds: 2))
-                                    .whenComplete(() {
-                                  showHintBubble(
-                                      "Say: ${_flightConversation[_currentMessageIndex].initialMessage ?? "No hint available"}");
-                                });
-                              }
-                            } else {
-                              showHintBubble("Your flight is complete.");
-                            }
-                          }
-                        });
-              }
+              _flightConversation[_currentMessageIndex].respondToPilotDialogue(
+                  textToSpeechOutput: result,
+                  onUndiscernableSpeech: (failedText, clarity) {
+                    print(result);
+                  },
+                  showFrequencyPicker: (frenq) {
+                    _recursiveFrequencyPicker(frenq, true);
+                  },
+                  showErrorHintBubble: (message) {
+                    showHintBubble(message);
+                  },
+                  onFinished: (bool) {
+                    if (bool) {
+                      _updateMessageIndex();
+                      _giveUserHint();
+                    }
+                  });
             });
             // await airTrafficControl.speakPhonetic(forWord: atisData);
 
@@ -308,6 +388,28 @@ class _RadioViewState extends State<RadioView> {
     );
   }
 
+  void _showCompletedDialogue() {
+    Alert(
+      context: context,
+      type: AlertType.success,
+      title: "Congrats you finished the flight!",
+      desc: "You're becoming a pro!",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "Complete Flight",
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+          },
+          width: 120,
+        )
+      ],
+    ).show();
+  }
+
   void _listen({Function(String resultText) onFinished}) async {
     if (!_isListening) {
       bool available = await _speech.initialize(
@@ -316,6 +418,8 @@ class _RadioViewState extends State<RadioView> {
       );
       if (available) {
         setState(() => _isListening = true);
+        _flightConversation[_currentMessageIndex].disposeAudioPlayer();
+        disposeAndRebuildPlayer();
         _speech.listen(
           onResult: (val) => setState(() {
             _text = val.recognizedWords;
