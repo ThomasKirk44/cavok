@@ -14,16 +14,16 @@ T exceptionAware<T>(T Function() f) {
 }
 
 class RadioTransmission {
-  RadioTransmission({
-    @required this.pilotDialogue,
-    @required this.towerResponseSoundFileLocation,
-    this.towerErrorResponseSoundFileLocation,
-    this.errorHintMessage,
-    this.requiredFrequency,
-    this.requiredWords,
-    this.responseDelay = const Duration(seconds: 4),
-    this.hintMessage,
-  });
+  RadioTransmission(
+      {@required this.pilotDialogue,
+      @required this.towerResponseSoundFileLocation,
+      this.towerErrorResponseSoundFileLocation,
+      this.errorHintMessage,
+      this.requiredFrequency,
+      this.requiredWords,
+      this.responseDelay = const Duration(seconds: 4),
+      this.hintMessage,
+      this.onlyCheckForRequiredWords = false});
 
   ///[pilotDialogue] questions can be asked in more than one way so a list is supplied of possible questions. to ensure the system understands what the person is trying to say.
   List<String> pilotDialogue;
@@ -51,6 +51,8 @@ class RadioTransmission {
 
   ///[responseDelay] the number of seconds for the tower to respond
   final Duration responseDelay;
+
+  final bool onlyCheckForRequiredWords;
 
   ///[checkForPilotDialogueMatching] default = true; if false any message can be used.
   bool get checkForPilotDialogueMatching {
@@ -95,7 +97,9 @@ class RadioTransmission {
   void frequencyValidator() {}
 
   void disposeAudioPlayer() async {
-    await _player.fixedPlayer.dispose();
+    if (_player.fixedPlayer != null) {
+      await _player.fixedPlayer.dispose();
+    }
   }
 
   void respondToPilotDialogue(
@@ -109,20 +113,15 @@ class RadioTransmission {
       Function(double) showFrequencyPicker,
       Function(bool) onFinished,
       Function(bool) onRequiredNotFound}) async {
+    disposeAudioPlayer();
+
     if (pilotDialogue == null) {
       _checkForPilotDialogueMatching = false;
     }
 
-    if (checkForPilotDialogueMatching) {
-      double checkResult = 0;
-      pilotDialogue.forEach((element) {
-        if (textToSpeechOutput.similarityTo(element) > checkResult) {
-          checkResult = textToSpeechOutput.similarityTo(element);
-        }
-      });
-      if (checkResult < 0.5 ||
-          ((requiredWords != null) &&
-              (!_requiredWordsIncluded(inString: textToSpeechOutput)))) {
+    if (onlyCheckForRequiredWords) {
+      if ((requiredWords != null) &&
+          (!_requiredWordsIncluded(inString: textToSpeechOutput))) {
         _playErrorMessage();
         _showPilotWhatToSay(showErrorHintBubble);
         onFinished(false);
@@ -133,11 +132,32 @@ class RadioTransmission {
             showFrequencyPicker: showFrequencyPicker);
       }
     } else {
-      //this is the case that it doesn't matter what the pilot says it is just supposed to play the message
-      _playTowerResponseAndShowPicker(
-          hintCallBack: showErrorHintBubble,
-          finishedCompetionHandler: onFinished,
-          showFrequencyPicker: showFrequencyPicker);
+      if (checkForPilotDialogueMatching) {
+        double checkResult = 0;
+        pilotDialogue.forEach((element) {
+          if (textToSpeechOutput.similarityTo(element) > checkResult) {
+            checkResult = textToSpeechOutput.similarityTo(element);
+          }
+        });
+        if (checkResult < 0.5 ||
+            ((requiredWords != null) &&
+                (!_requiredWordsIncluded(inString: textToSpeechOutput)))) {
+          _playErrorMessage();
+          _showPilotWhatToSay(showErrorHintBubble);
+          onFinished(false);
+        } else {
+          _playTowerResponseAndShowPicker(
+              hintCallBack: showErrorHintBubble,
+              finishedCompetionHandler: onFinished,
+              showFrequencyPicker: showFrequencyPicker);
+        }
+      } else {
+        //this is the case that it doesn't matter what the pilot says it is just supposed to play the message
+        _playTowerResponseAndShowPicker(
+            hintCallBack: showErrorHintBubble,
+            finishedCompetionHandler: onFinished,
+            showFrequencyPicker: showFrequencyPicker);
+      }
     }
   }
 

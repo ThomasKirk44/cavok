@@ -21,6 +21,7 @@ Map<String, String> airportNameIcao = {
 ///include all the properties and conversations last for readability.
 final Map<String, Airport> airports = {
   "EGNT": Airport(
+    atisAudioFile: "tripAudio/newcastle-welshpool/atis.mp3",
     availableAirspaces: [AirSpaceNames.london, AirSpaceNames.shawbury],
     fromIcaoCode: "EGNT",
     towerFrequency: 119.70,

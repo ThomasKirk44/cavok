@@ -88,7 +88,7 @@ class _SetupScreenState extends State<SetupScreen> {
               chipLabelStyle: TextStyle(fontWeight: FontWeight.bold),
               dialogTextStyle: TextStyle(fontWeight: FontWeight.bold),
               checkBoxActiveColor: Colors.red,
-              checkBoxCheckColor: Colors.green,
+              checkBoxCheckColor: Colors.white,
               dialogShapeBorder: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12.0))),
               title: Text(
